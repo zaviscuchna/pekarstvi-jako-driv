@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /pekarna-3f7q2x.html
+Disallow: /admin-manifest.json
+Allow: /
+
+Sitemap: https://pekarstvijakodriv.cz/sitemap.xml

@@ -1,0 +1,14 @@
+{
+  "name": "Jako Dřív — správa webu",
+  "short_name": "Jako Dřív",
+  "description": "Správa dnešní tabule a ceníku pekařství Jako Dřív",
+  "start_url": "./pekarna-3f7q2x.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f1e8",
+  "theme_color": "#17140e",
+  "icons": [
+    { "src": "foto/logo-ofiko.png", "sizes": "330x338", "type": "image/png", "purpose": "any" }
+  ]
+}

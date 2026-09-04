@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pekařství Jako Dřív — Jindřichův Hradec</title>
+  <meta name="description" content="Malá rodinná pekárna v Jindřichově Hradci. Pečeme jako dřív — poctivě a od srdce. Čerstvé pečivo, chléb ze žitného kvasu a rohlíky z horkého plechu, Po–Pá od 7:00 do vyprodání.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #FAF7F2;
+      --bg-dark: #17140E;
+      --surface: #F0E9DE;
+      --primary: #C68B3C;
+      --primary-deep: #A86F28;
+      --text:    #1C1915;
+      --text-inv:#F0EBE1;
+      --muted:   #8A7D72;
+      --border:  #DDD3C2;
+
+      --font-script:  'Dancing Script', cursive;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Inter', system-ui, sans-serif;
+
+      --t-xs:   clamp(0.72rem,  1vw,    0.85rem);
+      --t-sm:   clamp(0.875rem, 1.2vw,  1rem);
+      --t-base: clamp(1rem,     1.5vw,  1.125rem);
+      --t-lg:   clamp(1.125rem, 2vw,    1.375rem);
+      --t-2xl:  clamp(2rem,     4vw,    3rem);
+      --t-3xl:  clamp(2.5rem,   6vw,    5rem);
+      --t-mega: clamp(3rem,     8vw,    7.5rem);
+      --t-hero: clamp(3.5rem,   9vw,    9rem);
+
+      --ease:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --pad:    clamp(5rem, 10vw, 10rem);
+      --gutter: clamp(1.5rem, 5vw, 5rem);
+    }
+
+    html { scroll-behavior: smooth; overflow-x: clip; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "kern" 1, "liga" 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; inset: 0 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem var(--gutter);
+      z-index: 100;
+      pointer-events: none;
+      transition: background .45s var(--ease), box-shadow .45s ease;
+    }
+    nav.nav-solid {
+      background: rgba(250,247,242,.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .nav-left { display: flex; align-items: center; gap: 1.75rem; pointer-events: all; }
+    .nav-link {
+      font-size: var(--t-xs); font-weight: 500;
+      letter-spacing: .13em; text-transform: uppercase;
+      color: #fff; text-decoration: none;
+      transition: color .4s ease, opacity .3s ease;
+    }
+    .nav-link:hover { opacity: .6; }
+    nav.nav-solid .nav-link { color: var(--text); }
+    .nav-sep { width: 1px; height: 14px; background: rgba(255,255,255,.3); transition: background .4s ease; }
+    nav.nav-solid .nav-sep { background: rgba(28,25,21,.2); }
+
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; pointer-events: all; }
+    .nav-cta {
+      font-size: var(--t-xs); font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--bg-dark); background: var(--primary);
+      padding: .65rem 1.3rem; border-radius: 2px;
+      text-decoration: none;
+      transition: background .3s ease, transform .3s var(--spring);
+    }
+    .nav-cta:hover { background: #d79c4d; transform: translateY(-2px); }
+    /* logo se „zadokuje" do nav až po odscrollování hero */
+    .nav-logo-mark {
+      width: 60px; height: 75px; opacity: 0;
+      pointer-events: none; flex-shrink: 0; color: var(--primary);
+      transform: translateY(-8px) scale(.9);
+      transition: opacity .45s ease, transform .45s var(--spring);
+    }
+    nav.nav-solid .nav-logo-mark { opacity: .95; transform: none; }
+    .nav-logo-mark svg { width: 100%; height: 100%; }
+
+    /* na mobilu nechat jen „Nabídka" — „Dnes pečeme" už je jako CTA v hero */
+    @media (max-width: 680px) {
+      .nav-left .nav-link:not(:nth-child(3)), .nav-left .nav-sep { display: none; }
+      .nav-logo-mark { display: none; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      height: 100vh; min-height: 680px;
+      position: relative;
+      display: flex; align-items: flex-end; justify-content: center;
+      padding: clamp(4.5rem,8vh,6rem) var(--gutter) clamp(3.5rem,8vh,6.5rem);
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('foto/interier.jpg') center 24%/cover no-repeat;
+      filter: contrast(1.03) saturate(.8) brightness(.88);
+      transform: scale(1.04);
+      animation: heroZoom 8s var(--ease) forwards;
+    }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,
+        rgba(23,20,14,.94) 0%, rgba(23,20,14,.48) 42%, rgba(23,20,14,.06) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2; max-width: 1100px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+    }
+
+    /* velké logo — oficiální, jemný nástup */
+    .hero-logo {
+      width: clamp(130px, 15vw, 190px);
+      aspect-ratio: 330 / 338;
+      color: var(--text-inv);
+      margin-bottom: clamp(1.25rem, 2.5vh, 2rem);
+      filter: drop-shadow(0 10px 34px rgba(0,0,0,.45));
+    }
+    .hero-logo .logo-mask {
+      opacity: 0; transform: scale(.94) translateY(8px);
+      animation: logoIn 1.4s var(--ease) .15s forwards;
+    }
+    @keyframes logoIn { to { opacity: 1; transform: none; } }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 1rem;
+      font-size: clamp(.8rem, 1.3vw, 1rem); font-weight: 500;
+      letter-spacing: .5em; text-indent: .5em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: .75rem;
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .6s ease, transform .6s var(--ease);
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; width: 34px; height: 1px; background: var(--primary); flex-shrink: 0;
+    }
+    .hero-eyebrow.vis { opacity: 1; transform: none; }
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: var(--t-hero);
+      font-weight: 900; line-height: .9; letter-spacing: -.035em;
+      color: var(--text-inv); margin-bottom: 1.75rem;
+    }
+    .hero-h1 .w {
+      display: inline-block;
+      opacity: 0; transform: translateY(55px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+    .hero-h1 .w.vis { opacity: 1; transform: none; }
+    .hero-h1 em { font-family: var(--font-script); font-style: normal; font-weight: 700; font-size: 1.05em; letter-spacing: 0; color: var(--primary); }
+    .hero-sub {
+      font-size: var(--t-base); font-weight: 300;
+      color: rgba(240,235,225,.7);
+      max-width: 52ch; line-height: 1.65;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s var(--ease);
+    }
+    .hero-sub.vis { opacity: 1; transform: none; }
+    .hero-sub em { font-style: normal; font-weight: 400; color: var(--text-inv); }
+
+    /* proužek s režimem provozu pod claimem */
+    .hero-meta {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: .5rem 1.15rem; margin-top: 1.4rem;
+      font-size: clamp(.66rem, 1.05vw, .78rem); font-weight: 600;
+      letter-spacing: .22em; text-indent: .22em; text-transform: uppercase;
+      color: rgba(240,235,225,.6);
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s var(--ease);
+    }
+    .hero-meta.vis { opacity: 1; transform: none; }
+    .hero-meta span { display: inline-flex; align-items: center; gap: 1.15rem; }
+    .hero-meta span + span::before {
+      content: ''; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--primary); flex-shrink: 0;
+    }
+    /* na mobilu: „Čerstvé pečivo" na vlastní řádek, provozní doba pod tím */
+    @media (max-width: 560px) {
+      .hero-meta { gap: .4rem .9rem; letter-spacing: .18em; text-indent: .18em; }
+      .hero-meta span:first-child { flex-basis: 100%; justify-content: center; }
+      .hero-meta span:nth-child(2)::before { display: none; }
+    }
+
+    .hero-ctas {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s var(--ease);
+    }
+    .hero-ctas.vis { opacity: 1; transform: none; }
+    .btn-gold, .btn-ghost {
+      display: inline-flex; align-items: center; gap: .7rem;
+      padding: 1rem 2rem; border-radius: 2px;
+      font-size: var(--t-sm); font-weight: 600; letter-spacing: .04em;
+      text-decoration: none;
+      transition: background .3s ease, color .3s ease, transform .35s var(--spring), box-shadow .35s ease;
+    }
+    .btn-gold { background: var(--primary); color: var(--bg-dark); }
+    .btn-gold:hover { background: #d79c4d; transform: translateY(-3px); box-shadow: 0 12px 30px rgba(198,139,60,.35); }
+    .btn-ghost { background: transparent; color: var(--text-inv); border: 1px solid rgba(240,235,225,.35); }
+    .btn-ghost:hover { border-color: var(--text-inv); transform: translateY(-3px); }
+
+    /* ── LINOCUT STAMPS (sdílené) ── */
+    .stamp { color: currentColor; }
+    .stamp svg { display: block; width: 100%; height: 100%; }
+
+    /* ── OFIKO LOGO — PNG maska, barví se přes currentColor ── */
+    .logo-mask {
+      display: block; width: 100%; height: 100%;
+      background: currentColor;
+      -webkit-mask: url('data:image/png;base64,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') center/contain no-repeat;
+      mask: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAFSCAYAAACUrJbzAAAxFklEQVR4nO2dCRAc1ZnfP1jiJJusa5cykgJiETJIgDD3EQTBsAIZQQDHwHIExHIEyYRjORZBQIollqM4jCAchYAACoblCEc4LIQBBcMisBCsBBGHQcUREOdyBCQb5El9y/eKT4/3erp7uvu91/3/VXXNTM9M9zd9/Ocd30EEAAAAAAAAAAAAAAAAAAAAAAAApMpqoQ0AlXI/Ea1LRJ8R0RNE9CsimhvaKABSB0LZHj4kojUd658hom0C2NNW1iGiP5XlcyJ6j4jeDm0UqJc1at4+aK4lqUXyACLajoj+hoi2DmhXagwjop3kj+X7RLSeLEMKbOMDInqHiH4jy3wieq5Gm0EDoEWZPpurG3EFEf1LeT6CiJbKc5xnPwcR0RFEND7n5/kYvy6CyC3JN4noSyL6YyL6E2lp/msi+jMR2e/J95aJaM4hoqtr/D0AAAcskj1Z9lPr95B13NoEbn6rjp1r4ZbhTUQ0kYiGD7CfXYloqoik2TaL5lEV/hYAgIfN1I23yHrvalmft6XUNY7KEMinat73bkR0p9of/5ntXPM+Aegs16qbbQvrPV73cSC7UmBPj0jyMTu0QTv2J6Lfy755Qu64BvcNQCcwNzd3IV2tpRMC2ZUKFxDR+UR0OhHtENiWK9X5XCbddQDAgOynbqzDrffelfUgPOvLuTgjx2e5V/CFOq+3NmAfAK3m1+qG0kyUdWcFsgusyk/VeXoh53c+zBh7BgAUwNxIV1jrP0JrMhoOcIyBnp3zu2+o78ChHYCSvn/mJtIO5ccU6OaBepnsEMmirUP93V/UZCcAreUuuXl4tlTzZYDW5KViDztXg6852yGS00ps51RrG2NqsBWA1mJunMvUuhNl3ZSa930sEU0nosMcbjXg65afPi6fENGmA2zvY8vfEgCQg23VjaOTXfDr5TXv+xJLBL6S9WPk9d7UbZZax+e6CrZ5s7VNAEBO3z/7ppkmr3nssskxt6vU+/z6cuomOziOzfgaZs15Obqi7QLQap6XG+ZBtY5fv1zzfl1RLDqChV/Po+5xtHVMOA9onTPnZ1a8fZCD1fN8CESFGdDnCRTmInn8S3nkMcrjK96nbim+QkS3yXPbL5Cz53QJHiO+Rr3mY79jDanfNHUPrwCQPLuqloXJkcjP75DnN6n3X6pwvz3LHck4u49UESX8+iHqDo9ax4Xzf9bBOdZ+OEYdAJDD7YQzazOz1VjlBHmuHZWriPU+V21vgax73BLKwx1jloY2Rgi9oI4J56asE3syB25YAPThSblZHlAzzT+T916SCZcN1U2lu4Vl0TfpOFl3u7zeUl5fIa9Ptr57Xstq9gxVkU9NpGOzjz8nCQYA9MHcMKcR0cPK4ZxnWB9RGc/N5zgjzSD82MpoowWQ1x0orxc63JWMvRtTOzDDC2bhll7d8FgzZrwBKMB66oaZIo+cxZykuz1aOYSbzx084D51cllurRr2lXXsV0nynKOCNLPVhFPq7GYJFjvcN4HtZQAA6MMh6oZ5TVqUJK26+zzjZ4OSdZPyuheVaGrn6t1bdGOb8dcqx33zcJ+1X/1HBQDwMNMjXJySa5Q830m9f7KjzCqXjsjLxn3G4swMu6k7M8pq+cacqXstcdK/XzLz9HIuS9QEVlO5RnsyeQYAKDCR05NoDZJsNFrE3pL3n/OUjTBjink4VO3vYo9/X89yT9pEwhrZ1hgZbxVje1s8CXbIEYl0ioj/pAbrIKHLDUBBbHeUW+X1TdZrn/9k0RvuIrVPXw2Zl+X9lSrOOdbEDXPV77nVMfFEjgQjvgzyTY2F9mQdACAn5sbZR15/ptaZcUmeQHExQT5fhOvV9nnM0dfinCmtsukRpwG7V/0WblkXia0+PECOUbOEqOPzkQzTAJAcZnKEl7Ud6bc+k3E3Hw/kEAgb4xvpigYZIevvpvgZUaAba5ewrTtlneFuh0iG+NPZX/Y9K8C+ARgY3RUkCV8s0vro9elqujjS42Y0UtaZWffY2TCnAG1jfc7XOq+SqY7zyOGhoXNpPhbQBgBKM8sSyvMkS83SHFEb0yV5bBnMthdJVM6UCiN+mkRP4HCFShdfqc8srtmes1Utb70cQWHpOTJTAVA500VUehUnsjVJKHj8iKSk6STJnK1vNBPOqDGRPGU4wtr+o8qxPTVeVb/jE+t3XNfALPM4mejqOZYYwjz3UfZcHdoY0E62Uy2EB2TypEpMfDFH4Iy1buZLrZvuh+q9Myq48dkvchdHuq8UOVREUrs1bW0dPzNZVgX8R3mPRxyNQNaVdcjFHtKadWUgOtYa815kLW9KMhbzGQ6VBSA3ZsyuJ5l26kA7PM92VPN7yroBb1fuQq5WZtfhnJE3OoTrS/GfHKcmzfIyVr57teN82IuuddQEYzyO9TbHyDDPfCWQ84noFkn3dqSUIgGgMKZY/ZNWAoUqsd2AXLWhlzhuBLYNZDNOHS9flM4Kec+Ix1tW66rf8qwIDUdOhcAEIuiFrxfQIarOKF2EC9WFxym4bBcTdrfwpfcvgn2Rc1fYxdXqM2+UaBV1FTO0odlZWoiXSAv9SSvXp+tP6UWZCJkp3+VWZmjWtexcKd1s0AHOcLSglmVEkNSF2Tc7NLuSV/jGB/lizcvoHF0mm+0LbB8Q/aTGSZyYPCa4VQs6wNYetwq9zGnIlmM8kSt5hLLITTnc2h67BIHqSXU238cJ6pp5RB45iAC0nLOUj9s5Mjt5nqc7xG4sdfO0Rwwn9hHKHUu0XvT2ikbYgG6xm/Su7BbkVJWJqA0eDMDBA57UYYYzHWLJabTqxOyH/fM0x1l2rOVoiX44QOagurPXgDQ5WA1HuWoXMeur6whO5S3jtpwheNph1q5UWGfBe5O9x3C2chDvOfzkLheXi6JMjTzHIwjDAVLCdmWfxsHJjvuDAxdACzAO01ymNQ9XWhdCXSm/Jql92OJ1k1yw5n17hnGelQ0cgEG4VmobZTUgdEE0vSACpwWYiAluSRXBnuxh94iquVhtfy/rvYUSHWPe58gMDf/zo0gUaAJXyCT30JDjskV8VXIG206VVUfrTfsr2pEKKyRaRzsv2ym/TNkEAOqKxFlu3QeLWlQRE1j/hGVZVtDvcBDfNDvJqdnfNY7CUOyIjHEh0HSW9Crj10Ek7FVBtTtTGdAsJ1G16KS2GtPldl2wizPqzwBQBXrIx1c7CbSEXomyBf3GKu06MoPGYp/tEcqzVSo08vh4AtBEJnddwhi0DJMXsEi1QB92+jE92WKnIyvK8R4XpEWSUNewuWXDBQPsE4As5qvr7Jk+nx2qsidtUWHegwcl92mRssigINvKiXutou1tYInUiZK0YEEF297RM5njcrnYTkLIZlSwXwB85Om1jJMEHz0ZZ68yQmeyFa3Wk+seCThqykDNsdJV8bqj61tVhTmzPY600dFBcP0BTaNrrJtx8KHKIf0uWf/JANnui/BTaZT0rBSBnM8SDMCeNY3h6bHEniQgrYrHrDyUnPQVY5AghpR/9jIrUMLdEWKXziqPbvkAvJGRkHYQtrAumCq7v3bXvlcyNBGAquBhnvOldtOEyPKR7icllrm1CQZ05akDLWQ6C3kVbCmOvdyaRAor0DVOl0gzlBtpgDdFxO6safs8Ewf3HACq607fbt1T/WbZwYDsog42z8jVwTvWSe2XhQgA8G2GqkxeiPwJGLRfd4XEXskkGwB0mXGOXllPwoQ5cTbixxvAHPS7a9r+DNm+SfzbsxzCAQBuNpGItp4j4ocze4GGmJajWmEV45+zrUgajFMCkM2xDoGcEdqorrKiZuEaogp/bdBQ5nMA2hJGrKNrQARF57lsQh38zBLhXkayXQDAt8tFcG5XEJBb1MmoywfrRWvsU08cVe3YDkAbeLqgy88h4tbX+nrhawTarx6T5PKZddVpPtcSSg6VJEfBLxCeTeXG+47E/fsqCYJ6h8MMW0kQxf1SbWC0DGHxspF4lMwlol+UrEQA+rBuAxMrpiKjZrTaJ4dSgXgw3gl64YgnjCU3C4vgUx5fyXdEEE+FL3IznKgO/qc1VqZzlVzAzHd8XJCRzIFbMiAMHJ6LBBYBmdtAOdn3JbWUDee6hFDGw0kZIqmXtUIbCkDT6JRLnIW8DnqeLCU6BGv7mvYNqhVJ/LGB4KweYJ/fVc/rGCvkRKUkYVc2PP5i4MFoEC7Y4OcFv4NuOOiUUGp0Ia6q+Hfy6CopscDKggLCiCTnSyzKH6FlCbriHmTPYn5ck1C+klEawrB+DfsG2UwXoRyErwK6tYFqGCEz7CPEC+afE9HbRHRZRdtvBT2r3kzVCTF4uzfn2H9d+S+BmzMKjklizDJ9xkhy39nSm/uizzm9IbTBMTHHOjhVFhMzMd2nZHzG7PfeCvcLmhVJzIbHzxAp3/y4BA+cKvMHuzj8MHWWIqC4koieE5/KKjkqR83uD2t2TQL+LFF1LCBddsb5DCfA/Q72IvnMQw3Z1GXOKyF8pmxx3gWz4WlyuuNcovBYQ5hMzFk8KZ+Z15BNXeWyEiL5Y0dyhrxiybWtQfwMJ6LFjnM4KbRhXWKpdK2zeEZODDKd18f5A4ikYUGJbUAs4xbIWxzn7FGct+bhA78wZ9dbO5+DsBM3tkga+FxCLNOf+b7fcZ4el3hyzYYybnkoEZ0mf7icAewwIhoVyP5Wkmc2+0X5nCtyB1Q/7tRv6VcGxJfNBmIZN8cQ0QuOc8NhxBNEENmvdn6B8/qB1PIBA2DSqPGEThZmsuD6huzqCidV2JKsomXJXT0QhpsKnKeV0nh5Qlqe7HN5uWSVul16gF9Z39kp9A9MmW3lIPJMa5463/0+B+IQSQPEMq25gp61LBEBPYGIxpZs9R8g28Kw2QD8MGdpCXPi+OYGYUTyoJL7glimlXN2MREdXPG2WWRnVrzNTjFeTs6UPp8zN1DVJ7CLnNqgSA4yGw6xBMAq/8A1vH2so24e1M0ZjOMCiKQBLUsASnKQ3BBH5yyTC9IUyUHEEjlIQec5Qm4G9sHKM54G0ulu+4BYAlCQg+VGYMH0cb18hrOVgLRF0gCxBKAA43LMZi9STq+gfpHM+tOqkudL2IZID5CbNmWK5sqL1CdH4Q/k8ZEG7GmbSF5Y8DtHNujUv6nE8G9V4Dvcq9iogd7FJpIflcP1/rimfSwXP0Uu1gcfQ5DJUGkpzPK8z8lC0fUqzpklWmucFzQEz5awtc6QOJMftcmFY6QByIQvlAdy5EYE9SW4aKq73W94pcjC4a9VMyyASNb5e0CL4IvkM897H8v7HD8K2imSMYnlFQGF8taKfwtoGeYGsdlBXUQ86QOqF8nJFBcm72iobniZ2fiqlmUV/g7QQi7wZEs2Wc1dIgraJ5IxtCx/G1AoUR4jUfjE/UJq+NbJrnKhcPYSOwacl7Nr3n/qnNYikRxELHkWfVAglKBwAk+Td64JzMXC6Zz2ti4g4GdyC0UypFhCKEEhmr6pTPRNLC4rKdBmkQwllhBKkJuTA7Xm7AtnbsP7TzFGvs0iGUIsIZQgN70cqc/qYAd1oV7T8L7bLpKpJzxuSiwhlM1jFytLgmmBWpMgH4d1UCQHEcutC+4DQtk8SfZ0zEnjOFcQF10WyabEEkLZPItzFBeMtmwpiIsy8cdtE8kmxBJC2TzJaY4x+KzQhoBVgEg2J5YQyua5Vn7/+ZRYtw7Ew6QSNxxH6XSBOsQSQhkug1gS2vORGIrZ5rRnt7sikoOIJXtX+IBQhuFROQZc1yladk1J0TtWdA0i2axYQijDMFaOwScUMSZjC6s6CA9EMpxYQijDVjvg47AbRcgGOf5lQXP8GCIZVCwhlOE4XI7DfIqQ68S4D0MbAiCSEYglhDIs5ljUnbGstGETQxvSccqI5IzQRrdILHeR70Iow3KuHIumCtzlYqI6SSAcEMl4xBJCGZ7oNOkFMYgdPkE6InlOaKMTYUFA0SuzfBn6gEWCqWzAY5ZROXmuF9qYjlJGJLkqJai3ZYkWZVj2lePxHEXAlWLMa6EN6Sh2Fvc8C9cWAu0VSwjlN5hjshZFYohd0AvEKZJcRhW0WywhlN9wWQxj8bpwF2gWiGQ4YhdLCOU3DIth3PZOMeL2kEZ0EIhkeGIWSwjlqiyR47IdBaIXc6hQS9m/xI1zeWijW0qsYgmhXJWT5LjcSAFAtzsNkURLsntiCaH8NsG0ynS7bwux8w5SRiQ5rBR0TywhlP7ud+N5KMxJ2b3pHXcQiGT8xCSWEMpvc0qIPLnodjcHRDIdYhFLCKWbxjXrNtkhZrubSRdVZEFm+bDEIJYQSjcvy/FprP63OSHcsgTxlJRFSzIOQoslhNLNFDk+jZS03ThEE7ZjlBHJm0MbDaIRSwilmxFyfD6nBviZ7IwzqoDqgUi2h1BiCaH0Y44RJ/NpZJr99Lp31EEgku0jhFhCKP3c3lRuCnMyRtW9o45RpqQsRDINmhZLCKWfg+UYPUg1coA6GSBstUSIZFo0KZYQymxq17A7ZAd317mTjgGR7A5NiSWEMpu35DhtSjWxQnbAY2kgjEjeFdpoEL1YQijz5aicRjWBbndYkbw1tNEgCbGEUGYzTo7Ts1QD+8nGf1/HxjtGmbBEtCTbRZ1iCaEM2OibJRu+v46Nd4gyLkAQyXZSl1hCKPvzgRyrDalilsqGT6x6wx3iKIgkaEAsIZT9uaUuf0pzEsZUveGOcFyJC/6B0EaDJMUSQpm/0VLpuP+OdfbpO8DJJS72e0IbDZIVSwhl/rhv7oJXxjTZ6OIqN9qxeh1oSYKmxBJCmY/KG39zZIOXVLnRDjAZIgkCiCWEMh9Py/HamSriI9kghzCCfEAkQSixhFDmY6YcrzOoIswJ4H49qGfiBm5XoCqxhFDm41A5XhyaPTCb1tGXbzFlRPLR0EaDVoklhDIfo+V4sevjwBwtG3unio21HIgkiEEsIZT5qawReI1sCO4q2ZwKkQQ1Mb/EtdV4/epE+VCO15BBN7RYNnRWNXa1EogkiLFl2Vi1wYR5UI7VhEE3ZA46Ki5W5ycJkQRlWFDiWls/tNGRc44cp6mDbsgc8LWqsYu67gIEkQRNtyw3C210Apm87hxkIxtUOdjZMsrUuHkytNGgs2K5XWijI2VzOT4vDLKRCbKRL6uzq7NJdyGSILRYbhHa6EgZWOPM+Nvz1dnUSZF8LLTRoJWUEUtk//o2A/ear5INoJjYqi1stCRBymJZebLaxPlk0HmYR2QDF1RrV5JAJEGb/Cw3Dm10RDwjx4TTSQ5U1pGjc7rMriUuxIWhjQadokzLcmRooyPLds4TtE5W77OBdeTxt9RtuGVdhKeIaCtKgyPVjcN1kUJwvLLhokA2nKVsSDG4YjNpGRUBY+df84ry8imFuXC67LS6X4tbksMc9pfufpRkXYcNtRWm9zDGYcMoan/L8tPQxkaCyWcxO9hsUMeEMiWR1GMzelnRsA0vOWx4t2Eb3nbY8BqlS16x5EkMQLSvHA9OUF4KCGV+oeTwshSLwPNyGxEdq16f0JANP1b7vEYSqPb6jRdVzOFWt/889fon1G6xhFB+zQ6DNnQglPmE8jNK+0ayM6k01ap8w2HDCnnNtjTBRw4b2tCq3BpCWTgC8U0qCX95OXWbPEI5UPhTAEZ6JnB062qPmm3YQu3rQs/ETt2pwn7omcCZqtZvQmmyDcYoCzFQA4G//Dp1mzYKpakV0pMsz5qmSlNcp/a1tseG0oPrObkjo9dk1l9B7W1RfhHayIgo3XseIl/kSmVdpo1C+XLGP+hjDWXJfjdj4ua5hrrfy2U/SxzvLU28+51HKJueuEtWKLP8KNeQx/eqtwkExoSwPe3xAWX+qGYbTEbp3zjeM3atWbMN/0IeF2bY0GbXOHOPA6KVWW9mCeVq8ojmeXt5zeOuYxgeyIZXqVle73Mc2krdf4YpkTmx1S8yh0Ghom61KHT34zuBbGj6mjONAs0fGrYBhOX/Zb0Joewmv8voVuowribG51y14kuHkpVkZAQ2gLB8OqhQZvbdwT+Rmq+pcY7f3vFeU5mwTY7TbTNs+KQBP04z8WFj7CrtWxcYVysZ+Pk84z20KDt6Ud6lxqjsdFt/oVxnmrDhew73oK0atuH7jvdMrPf/pDRJ7c87NKWDRtaRg301dZs2ugeRsp39GQ3HqPWcWq5OzPXVE79Ow2lqvaulVyWj1L6mq/Uz1PoNWuxwDjFd9U+zN8iFnKrDbVUc3lKhfFrZb2a3zeumehEvOm7YXsMhjO9k2JCqD2VeP0oI5TfMzspynuVHZQ5i1w9mnqJDKR6jE4no7+X5/5As2YbjGrLhr4nol/L8Hsnio0MZm+AESQpibpbVA9gAwrO8rMvU0MDJXGMh1a73VClfkcWvHb8lT0vu+JyZdc4mol36fOYFhw1mkiWLk4loz5wF7nfq85mlJc/pFCLajeIELcpiXCPHg3WvVAjjDdRt8ghlbFUqz1e2vZuRjNf8Geply4ztnml9dpMchel64kDOGbj7JejIU8/lHOuz62V89hfqcy9lVCB0Je7lhMI+LkpAbCCU5breJmIsN2vJF2+mbpNii/J+h42+SbmD1We4FeoTVFM/SS+cT9LHk47Ps4C7OCZHLswRKg2cXjivpo/nHZ/nVq6vhdovF+bGEqnWKyDWoYBQFuO2QY4Hf/FO6jYptijvKmjnppLlmTz+hL7fvXeGDU95vjMv48YeX6K4G6dK87HE852HPZ/fMWN7e2TY0ESoZ1Ew612MewYVyvuo26TYorzRuolfLzj+58rX2JNxnL3U66yxv4fU50aobEE9yQ6Ul70tGy4moonqta9Lr2f2V0g6uY/V94pks97fsuE8qxUcIxDKYswZVCjnUrdJsUU5zXEj6Po4eoY7K8NQz9ElNoWY+o3jXe+wQbsD3Vswua/uEuuSEVnc6ficnrgxDudZbGfZcJCsPzdysUHXuxiPDiqUvq5SV0hRKHULaEfPmB07VfcL6TKfZVciw7U5b7LT1ef0JMrrBWrz6GN8lKOb1M+Gcz2irsc6jy5gw4FWCeOYxQZCWYz5gwol11bpMil2vc1EHC8/c/iF9ivJeq7V3XZVLHwzZ8GmnkyUaPJMhFyVUev7y5x/UOM9Qmvb0G8mtCetdNf3Y62NDaEshuntlKJnOQF3kYkJtihNNhSXiG+u7OaZaRfm/U8z3rsyhw2+rv5OfYRGC719/a1vjRXmteFBa/2e6j3XOPwI9b6dH3Mz9d6pFCcQymKYXkYpejkjU9pMqkI5S9m3dsas+OiM7+2dMfbp80n0uSnZzM2w4Rb1nj0LfWnB2ebHM2zQYZzDMmzfLKPeT6xAKIsx0PHAwUw31lsnnbjJU56zJ07ZGrPeleLMvLesxKz5lQ6XJPPeJZ79vJVhg6vOTb9Zc9uPc5eMIYqsP0HzHotwrEAoiwGh7KhQMk9ktABfdZxf3S3nyRjfuOWRBWzQkzd2ouAPZP37HnE91vr8Feo9HjsuU7vbbjl+Jet/q9ZpF6hDM1yvspzdQwOhLAaEssNCuXlGC3Gqowt7llq3luemK1rnfWzGeOOFjmvsAs91t7Nar4U1D3pShytQ+oYaDFd7bJig1rObUcxAKAMIZYyRB02R6hil4XKPk/VYR+vM5fKiJzV6nozk/ZjtmbzZ09E6M/6eOpHqJpYNecZHbe721Cw/0JH/8mVH11//6cQatqiBUBbPS7pi0Fx97OrRVVIXSjuUz5SjJYfri+miLnC4+PQkKUZZdKz4PCvxCi8nWV1hFm2S7DzahkFSwJmufk8iMWzHeuPQbjuk65ZkT66J2IFQ5md3ORavli0F8WoHahtXUeYh9lIQG8ufno400YkfjDP2n8njp+I/afJVMpdJ5p6yDBch1uOQOrZ7qJUP8AuZhOJQSMMMaSGXZVPlxfEjeb6tNQGm+VLKUTyg1v2NtJBBezD6psepC3FjBS2J1GlDi9I1EaEXU5vG9/uysgSVzdJiL5f3sYGTUlTFg559nN/Hhn55LWMCLcr8nNfPNzhvi9JVUrQrtKFFqSem/mOBGtZL5dzz+F5V/CURTXas9/nrviQz1aarXAU/8jiK+2x4Vs5xzO5AYPByxaW73q9l1D0G8TImIzv9zXLT69lfM8nzilr3X+W8s3uPZjtpQffzpRzr8ZE0s8r/hoj+ryWIJFmGDOyitJG1znTdX81R08aMPfHsug1nIfpzInpPrTO+mSusbO6mKqTtg8njrl0P8W0DA3e9zWC+V2k7QIruQTqypSc+kC62tRJT8OTKJE+BpWEqcYBZfPkjXd3bMzME9QTroj3aY8MIESa9XVdtcl/y4DMybND1cTaU804eG3QWJG9BqsCg6118kq+MN8W3ZiW7yuEtyXButwxpgHyMeZy+dXigWRbVcB641ejDFrSedKPLonNQxu4qBKHMT99j0a/rrbslIB20U/jv5PHPS9ap5u7v7eq1zhqUlQdAX3gr5fEH0q21Z5f7cYFVu+mdEjboHJdflKiNcqlVTkMPG3Q9HwJQWTW4O9JFUpz1NhXleo4kuv0S7mp0pA4v+1ix01n+tQ9YNtxRsiVzifU9LgtxWM4CZzqEU2exLmqDjtQxv3ty5K0ytCjzsW1VNdwflg1x96uLpNj1Ps1xIxgXiLxhiHZ3m0sLkMwW5xmbu9Jhw9UFE2vobOo6y1De7OI3OT6n1+VJIXi8ZcP6joinGIFQFhtOGbg22MV9qte1nRSFUhfCmuARr6yxunUdLais8goujvVkWb9Zref0+1lO8toGdhY3zMtpgy4ZwV1ucrQs7TyVWaUoNrQ8BXqSCT5GIJT5uLJPBdLcHNbxImMpCiUp22wn2kdyzES/pj5zgPXeypwFwkZnJNhd4CkzQZ5yDfaETd7s4ttm/NYlObIh6dK0dm30InV3QgChzIfxjOC8A5X45PVL/d9WUhVKk0bNhA1qlmfcKPuq93hs05U8wFUawUVWpp2sm1WPC9t+mNur944vYMOijPfMZJPmOPX+dI9/pisNWyxAKPOx3JPcuhRdPqipCuUZGeF/kzKSTGg/xawMPHnQKcw4TZpvHNVOMqErJdrk7Xa7QiY5A5BGj3Xum9GitVmYwD0BocxHpcfhiypVNzFSFUpS9n1UoKVl1t+dMWbIE3x5WFt9x9Uj6VmZguz1HJvuu/nzDr7r7EAm+qff7x2u1l+eUe/HLrwWExDK/mxWdW/ZDH4fTN0jZaGckdGF1e46hoMyom4+Vu+xaOblqowurI7ecTl1b58xZGBnKs9CTyDZMd5POWw4NcP9aGUiIgOh7M8JnnIopTkrI3a47aQslCSZzV0z4Ac5suJof0ufqGqn67yYHJN2F/xoR+lc36z6nIzaN3lwuTrZQwBGfB/y2PBrtT72jFoQyv6YIns8FFUJJn8gh4R1jdSFcguPq4/OXD7Zmgl+y+P76OrC52FHy4YtrYlC3Vt523FMZ/cpOJYHO/nuJo6utJn5/MxRZldXrkzhPoBQ9uejHEELhenqgU1dKMmKZNEVB83rSz1jhnYCCpNctww6kkUnqLBn0e0xQ1OWwTc7XXaCy7gmDXG4Kukx0mFWgbSiNYNCAaHsTy3H4HNPDea20wahJEm+q202tWl6KmO3ea39KE0rrmh8dh7B1l3Ziy0btJ+jqyhYWbTbT8+qL26CKszrxdZn+XUqQCjz9ZIHDl30xe7yYHuXaItQkoidrhtjO027fps98zwoI9Wfrl4uy7BhkPIPLsZY46Z5MpxzYo6UgFBmM01+v062Ujp7kOZX8qgnBEC86JA9nfHme0T036z1uuKhZk9PXsZROStzunJF8j/4vyKi/26td1XA+0oS5LoKio3OmQfSjqgh+WNbQ3wsbTc4G+5q/1uZ9LEpnb8QBMeMR3OPIq6SjomSYotSd3F9ngq7SWKKnjxnrpDXOq2a3Up5JueYpXG9yKpFspcaUN/emriZnZFk94WcLSKd/ciVad2UqzUtXPPnco+8vs7znV2sXJcxghZlNrX+/i4e3BSF8j6HjVnZyPNwbcGiY487Pm9qd5dF+0OahUXLhz0Z5YoQKoqOToq57j2Esr+jOfsGU9Vdb1KzoSnUNe4yrmJnDw6QAYojF44qeP18xzN8Yzud5+VDT8DDagVt+N+qhngRhohP6r4FbQDxwT0Z03OoRSj/l7UjECd8QxuOtLqiswqKw+9Vi4nHOKfkGNskK/3YZGsQnbv4eTEp39ZUyT6m5rThC/V4ilr/c0dGo34TUFzg7LvymhM1/616v6sJY1Ll38vjvXXtYKRctFkXZ9tIset9odW1Ws+yN0/mH+ZT9R0z6H1EzlBGXeDMzjzUkxITefjSMTt/bM5xUl07yOV875okcqG/M9vhkxkj6Hr7aeS3d+0ApyiUR3gS3vYyMgpRRgy0Tm57Rc5rYIaj+NbwAuOLJEkseo4Jphtz2nCp43OjClRxZN7wpJ0rmkmpaSCUbjaV3/0+1czdVcdHRk6KQjnG02oamfMmOSjDyXpJzgiVvdQ2Jnpsy7Lhp+ozOpRQi1e/chIHq238xJPTMsuLQyfHmOtJEhJbvSQDhNLNOTX55jrdKXpSuKkLpCiUpGzj/I2ao9R7PmfbrBvJrL+jgA32WNBJ6r1ZA9hwbQEb7Awx09V7Fxa0YUgCjugQSjdv5SiMVxldOsipCqV2EbLJ8kOcot7TEyB2vHaewIOsJMA6ftr3r99zzLafUqDb3G8/Wcl5dfGw/TNENtbqpBBKN43+7sWO7kxbSVUod85otY3PaBG9n3Ex6bC/PBypPn9RRpXHUzMmcGx6BQMfTnIkA3GleZtcYD+DZjJqAgjltzlZfjNP8jXCmbLD3H5ICZOqUNqiN8aTBFff7MPU5y/PKJtQxB/TVeo1K8v66Iz9XJbR2s1rg52l36znIlOuomR26OINGa3dmIBQ+ns4h1BDrN+hA52yUOrJDO1b6Zu9/qlntnybAW6uyRl1tF2z16erdexDSY68kUVtmJKRhegexzZ9dcN1Szz2ax9C+W2C/GbTItmV2k3KQsk8rezkoliu2t/jM0TDnikv4+3wgmdy6QBH1vFHHTbYNb7tMcMig/g9yZbuKj2xsVU8jP1IDZsXdK8KDYTSPQzU+L16kew4z+xnyqQulGTZusCxnsduTIRJT1yASGYG9Xe5REIZhlrbeczhCH+UVbqC/ThJ/oj1d30JO4r0grRvqHZCZ48OcrgE2S3JPLPtoYFQuv2COVlLo+iLvM20QSht38We5UtoQgrN6wes7mdPQgcHYUuHDdup5yYG3Ly+lYhmZoh8GXaxtvd7a50Jz9SCeI1H5GMHQrkqQX+vqW+yH7WXNgilSdr7rsd+zspDGb+vqhbUCMslRy8z+9hg3h+UTVT5ZXs5t48N7LaUChDKb4+TP0uBMLPfPK7UVtoilIZbHfabBLau38bjiE2kgbNLQdQ9HjjPsZ/zMmzoF24ZGxDKb3guhmjCth/wtgmlPZGjk9p+UWE3t2gNH1P+tZcRVVQ1E639mfRrPc/ET0pAKL8hit9qZgjL5PhLAZ1gwreYyY/UmGQ5gu8or3mGtylOtEIIx4kNWZmJquYUq1b4BLHB9vtMCQjlqpFc2uMjCIeKIe9QO2mzUIL2AqH8GjMmzjoVHHPQ21hsCUIJUgRCSau4fg1E0QznPv5OHnX2a5AOcyL4131CbAhZ5XNxR4IousIUeSzre1s5Oja2bXShRTmoQ3mVNtwagQ2+qpEpgRYlreKvG0WL8jdE9J48d9WBBmnwj6ENiKTMyO9CGwAGhjNDMR9IGG8UQsn8F3l0FYoHAIAmMTWZjNtZNEJ5nYp84EQKAAAQAnYt+748L1J1tBGhJBVdYRyYAQCgaYz+FCmL3KhQmkzV+1S8XQAAyAMnn/6RPM9bjrhxoSSVZv3qGrYNAABZmHh9XWI5SqE8XiVEBQCAJvkreTwpdqFcquowT6th+wAAkNWa/IeqfZvrEErmWHk0yVgBAKAplyC7qme0QvmsKuIUc6U6AFz8IbQBoFQWKpLAl19RIkLJ/LU8plBfBICm7gtQDzNVJdGkLohfqrDGtuaqBACEZ6o8fkREd6b4z2lmoH5e834AAN1lhqpjTykKJbcq35DnmNgBANTV5X5VlRdOcizmP8kjXIUAAHVN4tRRBK9RoZyrWpWXN7A/AEA3mC2PT9Vdirap2T0zdvCfG9ofAKDdrENEh8nzA+veWVNC+fdE9Lg8r2VWCgDQKW6Qx1uI6PU2+YuZMYT/IGnqAQCgDFzTaDd5fgg1QJNCuYyIrpHntc1OAQBaz1x5/Nu2RiCYjEJrSmFyAAAowjlEtAYRrVSO5q0M1TpZHi8KsG8AQLoMUbW5TNe7tUJ5iXTDmfsC7B8AkCa/VI/zuhD8/xfyuBcRjQ1kAwBt5itqF/sS0VbyfM+mdx5KKJeowj9zAtkAQJvh5LVt4m6rgkJn0kkdJwOyf6KqNwIAgM2N8rgsVHRf6Lx7P1ITPGMC2wIAiI+xRDTRGrLrnFA+TER/p6J3AABA84Q8XlV1HZyUhFLHgX+XiM6nNNmI2sFqoQ2IBByHOLjeUYers0LJ7C6PU4hoVGBbAABxdLn/KtQsd6xC+SsJbtdNbQBAd3lCHm9R/pPUdaE0we1c/e57EqYEAOgm18rjp00lvUhJKJkd5JHDlLanOFhO7ed38viPFJ73QxtARO9SN2D3vNjYW5W43jywLVHDPpU9WWJgE2VP1pI664Y2gIjWDm0AEQ2n9tDvmuXM4DExVNkWxLE8NZbJwVpKcfBJB4QStI9+16zJEB4LH4pdj4Q2JBWGq5NpQh1DwplKIJQgNbKu12A+iR7miF0rfB8Abiapk8rjFjGMny7KuPA4BRQAMeG7VmMr8necsm3D0MakyP3qAA4LbQwAoNY5gCOr33z3xit5/AIA0C56stwe2pDUGaYO5pOhjQEAVMZSua+74o5VO+OVWCIlGwDpMwcTofUwXR3YQ0MbAwAozZnqXt6m/GZAVpZjc4A3DW0MAGCg3iEqsdbIi2iyA5Ako9S9e0doY7rAp3KwY4gLBgDkjy3n+3Zhzs+DARmi/pkeD20MAKAvr8n9+k7/j4Iq2ViJ5UOhjQEAeHkJw2VhGadOAEfxAADiYr66R0eENqbLcM0dePcDEB8PqXtzg9DGgK/dDMwJmR3aGAAA6TwNHM8NImGmOjGzQhsDQIeZre5FZCmPkCsjTiUFQBe4Qt2DsZRzAQ6uQ8sSgCDMUvfe1qGNAcXEEmOWADTb3d46tDEgP9erE3dzaGMAaDG3QyTTZoY6gfeFNgaAls9ubxnaGFCeo9WJnBvaGABaxCPI5tUu9lEn9NnQxgDQAt5CxE072Vmd2A9CGwNAoqxnVXRcJ7RBoHpGWid5TGiDAEiI3dW9w6kOh4Y2CNTLx+qEc7ccAJDNJAxfdROdKX1aaGMAiJib1b3CocKgYzygLgB+DgBYlZfR+wLM6da4CwanASAare6Lr4how9AGgfDsZE3y7BnaIAAicadbFNoYEBdriduQuUAuDW0QAAG4UN0D54c2BsTLfepCWRzaGAAaYhgRva6u/b1CGwTi5xCrK75raIMAaMj15134R4IirC2lNZHbEnSl+NetoY0B7cjY/IFE9wCQOuOtXtMRoQ0C6bODdVEdH9ogACpyIOeuNpJagEqZqy6wBaGNAaAgWxDRSnUNXxzaINBeDrdalwh/BKkNIS1HJnLQBEOI6Dl14XGSDVScA7G2It9X1+pVoQ0C3eNIq3V5W2iDAFDcra7NZUQ0KrRBoNvo5Bq8nBjaINBpzrKux1NCGwSAYQ9JHmAuzk/EBQOAJhPrcmIX1IgC0TPN+jfn2fENQhsFWg13qReqa+73RDQutFEA5OEOSzBvCm0QaB2cEvBB6zo7L7RRABRljKTN1xfyJaGNAq3gFuu64j9mxGiDpNnRyszCy9mhjQJJMsshkEg2DVrFBCJ627rQeYYSgH4p0HTYYU9cfzhxCwCt5QAi+si68KeGNgpEWUP7Xus6eZSI1g1tGABNsj8RfWjdCDcS0fDQhoGg/JCI5lnXxfNEtGVowwAIyYGOFuYz4psJusNkx3XAZZVRwwkAxU+I6CXrRllBRGeGNgzUyqXWOTeTNAg5BCCDzRz+cSbSgqMvQPrsS0RPOM7xjNCGAZBiZcirHDcTLxeENg6Umpy50nEuuYjdfqGNA6AtBc8WO26yRVIcCsTLCUT0quPc3YDs4gDUwzpWEla9zBdBBeE5SuL8XX9s/B4AoCF2JqLbPaL5iEwOgeY4mIiedJyLTyUSi4dSAAABYReS+z2i+aIkS9g2tJEtg923rrbKGpvlfRlH5nh/AECkLc1ZUqLCJZzzZNwM6d+KsRMRXUhEL2f8IXFIKpJTAJBgnDD7YT7lubl5+bV8ZpvQxkYGF+Ca7sgAZRZ2Dr+OiPYObSgAoPpiUxxX/nSGcL5ARDOJ6LAOdR3ZuXsiEV2WIYwmGQVX4gQdYrXQBoAoWk08vrlXn0qSyyWL9kIJr/wHqUSZoiBuJH8YW8tvzuoqP05Ed4lAvtagnSAiIJTAFRXEojmWiDbPmanmAxmfWyIhmPz4rqznPJxNsJaUER4iwjdE1m0greIf9Pn+/5FW9kJx6+HZawD+CQglyMMQaYHxrPloaZVtSERrltjWR5Ix6QtpperHz9VzH/9Mxl2NEK4h69muPLwireEFsjxc4jeAjgGhBFUwRsLzNiaikSKkGzQcdfIHab2+J8mR+flSaem+Is8BKAWEEoSCW4WrlxTEZTXYAwAAAAAAAAAAAAAAAAAAAACgBPn/QmnO8OhKUNgAAAAASUVORK5CYII=') center/contain no-repeat;
+    }
+
+    /* ── DNES PEČEME ── */
+    .dnes {
+      background: var(--primary);
+      padding: var(--pad) var(--gutter);
+      position: relative; overflow: hidden;
+    }
+    .dnes-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: clamp(3rem,6vw,6rem); align-items: center;
+      position: relative;
+    }
+    @media (max-width: 860px) { .dnes-inner { grid-template-columns: 1fr; } }
+
+    .dnes-label {
+      font-size: var(--t-xs); font-weight: 600;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--bg-dark); opacity: .75; margin-bottom: 1.25rem;
+    }
+    .dnes-title {
+      font-family: var(--font-display);
+      font-size: var(--t-mega);
+      font-weight: 900; line-height: .92; letter-spacing: -.02em;
+      text-transform: uppercase;
+      color: var(--bg-dark);
+      margin-bottom: 1.75rem;
+    }
+    .dnes-title em { font-family: var(--font-script); font-style: normal; font-weight: 700; text-transform: none; letter-spacing: 0; color: var(--bg); padding-left: .1em; }
+    .dnes-text {
+      font-size: var(--t-base); font-weight: 400;
+      color: rgba(23,20,14,.78); max-width: 42ch; line-height: 1.7;
+    }
+    /* tečka za odstavcem — rukopisem, jako vzkaz na tabuli */
+    .dnes-pull {
+      font-family: var(--font-script);
+      font-size: clamp(1.3rem, 2.6vw, 1.9rem); line-height: 1.35;
+      color: var(--bg-dark); max-width: 20ch;
+      margin-top: 1.5rem; padding-left: .1em;
+    }
+    .dnes-wheat {
+      width: clamp(72px, 9vw, 120px); margin-top: 2.5rem;
+      color: var(--bg-dark); opacity: .85;
+    }
+
+    /* tabule — nakloněná karta jako lístek z pekárny */
+    .board {
+      background: var(--bg);
+      border-radius: 4px;
+      padding: clamp(1.75rem,3.5vw,2.75rem);
+      transform: rotate(-1.6deg);
+      box-shadow: 0 34px 80px rgba(23,20,14,.28);
+      position: relative;
+      transition: transform .5s var(--spring);
+    }
+    .board:hover { transform: rotate(-.4deg); }
+    .board::before {
+      content: '';
+      position: absolute; top: -14px; left: 50%;
+      transform: translateX(-50%) rotate(2deg);
+      width: 108px; height: 28px;
+      background: rgba(198,139,60,.32);
+      backdrop-filter: blur(2px);
+      border-left: 1px solid rgba(255,255,255,.5);
+      border-right: 1px solid rgba(255,255,255,.5);
+    }
+    .board-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-bottom: 2px solid var(--text); padding-bottom: .9rem; margin-bottom: .5rem;
+    }
+    .board-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem,2.4vw,1.8rem);
+      font-weight: 900; letter-spacing: .02em; text-transform: uppercase;
+    }
+    .board-date {
+      font-family: var(--font-script);
+      font-size: clamp(1.05rem,1.8vw,1.3rem);
+      color: var(--primary-deep);
+    }
+    .board-row {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+      padding: .95rem 0; border-bottom: 1px dashed var(--border);
+    }
+    .board-row:last-of-type { border-bottom: none; }
+    .board-item strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem,1.9vw,1.3rem);
+      font-weight: 700; letter-spacing: -.01em;
+    }
+    .board-item span { font-size: var(--t-xs); color: var(--muted); font-weight: 400; }
+    .board-price {
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem,1.9vw,1.3rem);
+      font-weight: 700; color: var(--primary-deep); white-space: nowrap;
+    }
+    .board-cta {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      margin-top: 1.4rem; padding-top: 1.4rem;
+      border-top: 2px solid var(--text);
+      flex-wrap: wrap;
+    }
+    .board-note { font-size: var(--t-xs); color: var(--muted); max-width: 24ch; line-height: 1.5; }
+    .btn-dark {
+      display: inline-flex; align-items: center; gap: .7rem;
+      padding: .9rem 1.7rem; border-radius: 2px;
+      background: var(--bg-dark); color: var(--text-inv);
+      font-size: var(--t-sm); font-weight: 600; letter-spacing: .04em;
+      text-decoration: none;
+      transition: background .3s ease, transform .35s var(--spring), box-shadow .35s ease;
+    }
+    .btn-dark:hover { background: var(--primary-deep); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(23,20,14,.3); }
+
+    /* razítko v rohu tabule — logo pekárny */
+    .board-stamp {
+      position: absolute; top: -34px; right: -26px;
+      width: 96px; height: 120px;
+      color: var(--primary-deep);
+      transform: rotate(9deg);
+      opacity: .92;
+    }
+    @media (max-width: 500px) { .board-stamp { width: 74px; height: 93px; top: -26px; right: -10px; } }
+
+    /* ── SHARED ── */
+    .label {
+      font-size: var(--t-xs); font-weight: 600;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--primary); margin-bottom: 1.25rem;
+    }
+    .title {
+      font-family: var(--font-display);
+      font-size: var(--t-3xl);
+      font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
+      color: var(--text); margin-bottom: 1.5rem;
+    }
+    /* podpis sekcí — verzálky × kurzíva (styl „DNES pečeme") */
+    .block-title {
+      font-family: var(--font-display);
+      font-size: var(--t-3xl);
+      font-weight: 900; line-height: .95; letter-spacing: -.02em;
+      text-transform: uppercase;
+      color: var(--text); margin-bottom: 1.5rem;
+    }
+    /* Dancing Script má záporný levý přesah — bez odsazení Safari ořízne první „j" */
+    .block-title em { font-family: var(--font-script); font-style: normal; font-weight: 700; text-transform: none; letter-spacing: 0; color: var(--primary); padding-left: .1em; }
+    .block-title.xl { font-size: var(--t-mega); line-height: .92; margin-bottom: 1.75rem; }
+    .block-title.on-dark { color: var(--text-inv); }
+    .section-stamp {
+      width: clamp(60px, 7vw, 92px);
+      margin-top: 2.25rem;
+      color: var(--primary); opacity: .9;
+    }
+    .section-stamp svg { width: 100%; height: auto; display: block; }
+    .body-text {
+      font-size: var(--t-base); font-weight: 300;
+      color: var(--muted); line-height: 1.8; max-width: 48ch;
+    }
+    .body-text p + p { margin-top: .9rem; }
+
+    /* ── PŘÍBĚH ── */
+    .story { padding: var(--pad) var(--gutter); }
+    /* úvodní tři věty — pomalejší rytmus, větší písmo než tělo */
+    .story-lead {
+      font-family: var(--font-display);
+      font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+      font-weight: 400; line-height: 1.5;
+      color: var(--text); max-width: 34ch;
+      text-wrap: balance;
+      margin-bottom: 1.75rem;
+    }
+    .story-lead span { display: block; }
+    .story-lead span + span { margin-top: .55rem; }
+    .story-lead .q { font-style: italic; color: var(--primary); }
+    .sec-gold .story-lead { color: var(--bg-dark); }
+    .sec-gold .story-lead .q { color: rgba(23,20,14,.62); }
+    .story-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem,7vw,8rem); align-items: center;
+      max-width: 1200px; margin: 0 auto;
+    }
+    @media (max-width: 780px) { .story-inner { grid-template-columns: 1fr; } }
+    .stats { display: flex; gap: 1.75rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .stat { border-left: 2px solid var(--border); padding-left: 1.25rem; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem,3.5vw,2.5rem);
+      font-weight: 700; color: var(--text); letter-spacing: -.02em;
+    }
+    .stat-lbl { font-size: var(--t-xs); color: var(--muted); margin-top: .15rem; }
+    .story-img {
+      position: relative; border-radius: 3px;
+      overflow: hidden; aspect-ratio: 4/5;
+      box-shadow: 0 30px 70px rgba(23,20,14,.12);
+    }
+    .story-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: sepia(.08) contrast(1.04) brightness(.97);
+      transition: transform .9s var(--ease);
+    }
+    .story-img:hover img { transform: scale(1.04); }
+    .story-img-tag {
+      position: absolute; bottom: 1.25rem; right: 1.25rem;
+      background: rgba(23,20,14,.72); backdrop-filter: blur(10px);
+      padding: .55rem 1rem; border-radius: 2px;
+      font-family: var(--font-script); font-size: 1.1rem;
+      color: var(--text-inv); letter-spacing: .02em;
+    }
+
+    /* ── NABÍDKA / CENÍK ── */
+    .nabidka { padding: var(--pad) var(--gutter); background: var(--surface); }
+    .nabidka-inner { max-width: 1100px; margin: 0 auto; }
+    .nabidka-head { text-align: center; margin-bottom: clamp(3rem,6vw,4.5rem); }
+    .nabidka-head .title { margin-bottom: .75rem; }
+    .nabidka-sub { font-size: var(--t-sm); color: var(--muted); font-weight: 300; font-style: italic; }
+    .menu-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(2.5rem,5vw,5rem);
+      align-items: start;
+    }
+    @media (max-width: 780px) { .menu-grid { grid-template-columns: 1fr; } }
+    .menu-cat { margin-bottom: 2.5rem; }
+    .menu-cat-title {
+      display: flex; align-items: center; gap: .9rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem,2.2vw,1.6rem);
+      font-weight: 900; text-transform: uppercase; letter-spacing: .04em;
+      margin-bottom: 1.4rem;
+    }
+    .menu-cat-title .cat-stamp { width: 34px; height: 34px; color: var(--primary-deep); flex-shrink: 0; }
+    .menu-item {
+      display: flex; align-items: baseline; gap: .6rem;
+      padding: .75rem 0;
+    }
+    .menu-item-name { font-size: var(--t-base); font-weight: 500; white-space: nowrap; }
+    @media (max-width: 640px) { .menu-item-name { white-space: normal; } }
+    .menu-item-desc { display: block; font-size: var(--t-xs); color: var(--muted); font-weight: 300; margin-top: .2rem; white-space: normal; }
+    .menu-dots { flex: 1; border-bottom: 2px dotted var(--border); transform: translateY(-4px); min-width: 24px; }
+    .menu-price {
+      font-family: var(--font-display);
+      font-size: var(--t-base); font-weight: 700; color: var(--primary-deep); white-space: nowrap;
+    }
+    .menu-tag {
+      display: inline-block;
+      font-size: .6rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--primary-deep);
+      border: 1px solid rgba(168,111,40,.4); border-radius: 100px;
+      padding: .12rem .5rem; margin-left: .45rem;
+      vertical-align: 2px;
+    }
+    .nabidka-cta { text-align: center; margin-top: 2rem; }
+    .nabidka-note { font-size: var(--t-xs); color: var(--muted); margin-top: 1.1rem; font-style: italic; }
+
+    /* ── KÁVA — Nordbeans ── */
+    .kava { padding: var(--pad) var(--gutter); background: var(--bg); }
+    .kava-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: clamp(3rem,6vw,7rem); align-items: center;
+    }
+    @media (max-width: 780px) { .kava-inner { grid-template-columns: 1fr; } }
+    .kava-img {
+      display: block; position: relative;
+      max-width: min(400px, 82%);
+      margin: 0 auto;
+      transform: rotate(-2deg);
+      transition: transform .5s var(--spring);
+    }
+    .kava-img:hover { transform: rotate(-.5deg) translateY(-6px) scale(1.02); }
+    .kava-img img { width: 100%; display: block; filter: drop-shadow(0 28px 44px rgba(23,20,14,.28)); }
+    .kava-img-tag {
+      position: absolute; bottom: 1.1rem; right: 1.1rem;
+      background: rgba(23,20,14,.72); backdrop-filter: blur(10px);
+      padding: .5rem .95rem; border-radius: 2px;
+      font-family: var(--font-script); font-size: 1.05rem;
+      color: var(--text-inv); letter-spacing: .02em;
+    }
+    .kava-link { color: var(--primary-deep); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+    .kava-link:hover { color: var(--primary); }
+
+    /* ── PEČIVO — pověšené polaroidy ── */
+    .pecivo { padding: var(--pad) 0 calc(var(--pad) * .85); background: var(--bg); }
+    .pecivo-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 0 var(--gutter); margin-bottom: 3.5rem; gap: 2rem;
+    }
+    .pecivo-note {
+      font-size: var(--t-sm); font-weight: 300; font-style: italic;
+      color: var(--muted); max-width: 28ch; text-align: right; line-height: 1.55;
+    }
+    @media (max-width: 600px) { .pecivo-note { display: none; } }
+    /* pás fotek — scrolluje se do strany, svislý scroll stránky zůstává nativní */
+    .strip-wrap { position: relative; max-width: 1440px; margin: 0 auto; }
+    .strip-wrap::before, .strip-wrap::after {
+      content: ''; position: absolute; top: 0; bottom: 0;
+      width: clamp(20px, 4vw, 64px); z-index: 3; pointer-events: none;
+    }
+    .strip-wrap::before { left: 0; background: linear-gradient(to right, var(--primary), rgba(198,139,60,0)); }
+    .strip-wrap::after { right: 0; background: linear-gradient(to left, var(--primary), rgba(198,139,60,0)); }
+    .polaroid-strip {
+      display: flex; align-items: flex-start;
+      gap: clamp(1.5rem, 2.5vw, 2.5rem);
+      overflow-x: auto; overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      padding: 2.5rem var(--gutter) 3.25rem;
+      scrollbar-width: none;
+      cursor: grab;
+    }
+    .polaroid-strip::-webkit-scrollbar { display: none; }
+    .polaroid-strip.dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+    .polaroid-strip .polaroid { flex: 0 0 auto; scroll-snap-align: center; }
+    .strip-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      z-index: 4; width: 46px; height: 46px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: var(--bg-dark); color: var(--text-inv);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 24px rgba(23,20,14,.3);
+      transition: background .3s ease, transform .3s var(--spring);
+    }
+    .strip-btn:hover { background: var(--primary-deep); transform: translateY(-50%) scale(1.08); }
+    .strip-btn.prev { left: clamp(.4rem, 1.5vw, 1.25rem); }
+    .strip-btn.next { right: clamp(.4rem, 1.5vw, 1.25rem); }
+    @media (max-width: 680px) { .strip-btn { display: none; } }
+    .polaroid {
+      --r: 0deg;
+      position: relative;
+      width: clamp(190px, 23vw, 290px);
+      margin: 0;
+      background: var(--bg);
+      padding: 10px 10px 0;
+      border-radius: 2px;
+      box-shadow: 0 16px 40px rgba(23,20,14,.22);
+      transform: rotate(var(--r));
+      transition: transform .45s var(--spring), box-shadow .45s ease;
+    }
+    .polaroid:nth-child(even) { margin-top: 2.75rem; }
+    .polaroid:hover { transform: rotate(0deg) scale(1.05); box-shadow: 0 26px 60px rgba(23,20,14,.32); z-index: 3; }
+    .polaroid img {
+      width: 100%; aspect-ratio: 10/11; object-fit: cover; display: block;
+      filter: sepia(.06) contrast(1.03) brightness(.99);
+    }
+    .polaroid figcaption {
+      font-family: var(--font-script);
+      font-size: clamp(1rem, 1.6vw, 1.25rem);
+      color: #55493C; text-align: center;
+      padding: .6rem .25rem .85rem;
+    }
+    .polaroid .tape {
+      position: absolute; top: -13px; left: 50%;
+      width: 92px; height: 26px;
+      background: rgba(198,139,60,.35);
+      backdrop-filter: blur(2px);
+      border-left: 1px solid rgba(255,255,255,.55);
+      border-right: 1px solid rgba(255,255,255,.55);
+      transform: translateX(-50%) rotate(var(--tr, -2deg));
+    }
+    @media (max-width: 640px) {
+      .polaroid { width: min(62vw, 250px); padding: 8px 8px 0; }
+      .polaroid:nth-child(even) { margin-top: 1.5rem; }
+    }
+
+    /* ── PŘEDOBJEDNÁVKA ── */
+    .objednavka { padding: var(--pad) var(--gutter); background: var(--bg-dark); }
+    .objednavka .body-text { color: rgba(240,235,225,.62); }
+    .objednavka .step-body strong { color: var(--text-inv); }
+    .objednavka .step-body span { color: rgba(240,235,225,.45); }
+    .objednavka .form-card { border: none; box-shadow: 0 34px 80px rgba(0,0,0,.4); }
+    .objednavka-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.1fr;
+      gap: clamp(3rem,6vw,6rem); align-items: start;
+    }
+    @media (max-width: 820px) { .objednavka-inner { grid-template-columns: 1fr; } }
+    .steps { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.4rem; }
+    .step { display: flex; gap: 1.1rem; align-items: flex-start; }
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 900; color: var(--primary);
+      line-height: 1; flex-shrink: 0; width: 2rem;
+    }
+    .step-body strong { display: block; font-size: var(--t-sm); font-weight: 600; margin-bottom: .2rem; }
+    .step-body span { font-size: var(--t-xs); color: var(--muted); line-height: 1.55; }
+
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: clamp(1.5rem,3vw,2.5rem);
+      box-shadow: 0 24px 60px rgba(23,20,14,.08);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+    .form-field { margin-bottom: 1.1rem; }
+    .form-field label {
+      display: block;
+      font-size: .68rem; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .4rem;
+    }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%;
+      font-family: var(--font-body); font-size: var(--t-sm);
+      padding: .8rem .95rem;
+      border: 1px solid var(--border); border-radius: 2px;
+      background: var(--bg); color: var(--text);
+      transition: border-color .3s ease, box-shadow .3s ease;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(198,139,60,.15);
+    }
+    .form-note { font-size: var(--t-xs); color: var(--muted); margin-top: .9rem; line-height: 1.5; }
+
+    /* ── QUICK LINKS ── */
+    .quick { background: var(--surface); padding: clamp(3.5rem,7vw,6rem) var(--gutter); border-top: 1px solid var(--border); }
+    .quick-inner {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem;
+    }
+    @media (max-width: 680px) { .quick-inner { grid-template-columns: 1fr; } }
+    .quick-item {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      text-decoration: none; color: var(--text);
+      text-align: center;
+      transition: transform .4s var(--spring);
+    }
+    .quick-item:hover { transform: translateY(-6px); }
+    .quick-icon { width: 74px; height: 74px; color: var(--primary-deep); transition: transform .4s var(--spring); }
+    .quick-item:hover .quick-icon { transform: rotate(-5deg) scale(1.08); }
+    .quick-lbl {
+      font-size: var(--t-xs); font-weight: 600;
+      letter-spacing: .16em; text-transform: uppercase;
+    }
+    .quick-sub { font-size: var(--t-xs); color: var(--muted); font-weight: 300; margin-top: -.5rem; }
+
+    /* ── KONTAKT ── */
+    .kontakt { padding: var(--pad) var(--gutter); }
+    .kontakt-inner {
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: clamp(3rem,6vw,7rem);
+      max-width: 1200px; margin: 0 auto; align-items: start;
+    }
+    @media (max-width: 780px) { .kontakt-inner { grid-template-columns: 1fr; } }
+    .map-wrap {
+      border-radius: 4px; overflow: hidden;
+      box-shadow: 0 20px 50px rgba(23,20,14,.1);
+      aspect-ratio: 4/3;
+    }
+    .map-wrap iframe { width: 100%; height: 100%; border: none; display: block; filter: saturate(.85) contrast(1.02); }
+    .map-nav-btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      margin-top: 1rem;
+      font-size: var(--t-xs); font-weight: 500; letter-spacing: .08em;
+      color: var(--primary); text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s ease; padding-bottom: 1px;
+    }
+    .map-nav-btn:hover { border-color: var(--primary); }
+    .hours { margin-top: 1.75rem; }
+    .hour-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .8rem 0; border-bottom: 1px solid var(--border);
+      font-size: var(--t-sm);
+    }
+    .hour-row:first-child { border-top: 1px solid var(--border); }
+    .hour-day { color: var(--muted); font-weight: 300; }
+    .hour-time { font-weight: 500; }
+    .hour-closed { color: var(--muted); font-style: italic; font-weight: 300; }
+    .addr { margin-top: 2rem; display: flex; flex-direction: column; gap: .85rem; }
+    .addr-row { display: flex; align-items: center; gap: .8rem; font-size: var(--t-base); font-weight: 300; }
+    .addr-row svg { stroke: var(--primary); flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg-dark);
+      padding: 2.5rem var(--gutter);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-left { display: flex; align-items: center; gap: 1rem; }
+    .footer-logo { width: 44px; height: 55px; color: var(--primary); opacity: .9; }
+    .footer-logo svg { width: 100%; height: 100%; }
+    .footer-brand { font-family: var(--font-script); font-size: 1.5rem; color: var(--text-inv); }
+    .footer-brand em { color: var(--primary); font-style: normal; }
+    .footer-meta { font-size: var(--t-xs); color: #3D3830; letter-spacing: .05em; }
+    .footer-ksh { font-size: var(--t-xs); color: #3D3830; }
+    .footer-ksh a { color: var(--primary); text-decoration: none; }
+
+
+    /* ── ZLATÝ REŽIM — od „Dnes pečeme" dál (vzor Forma: jedna barva, krémové karty) ── */
+    .sec-gold { background: var(--primary); }
+    .sec-gold .label { color: var(--bg-dark); opacity: .78; }
+    .sec-gold .block-title { color: var(--bg-dark); }
+    .sec-gold .block-title em { color: var(--bg); }
+    .sec-gold .body-text { color: rgba(23,20,14,.78); font-weight: 400; }
+    .sec-gold .stat { border-color: rgba(23,20,14,.3); }
+    .sec-gold .stat-num { color: var(--bg-dark); }
+    .sec-gold .stat-lbl { color: rgba(23,20,14,.62); }
+    .sec-gold .section-stamp { color: var(--bg-dark); opacity: .85; }
+    .sec-gold .pecivo-note, .sec-gold .nabidka-sub { color: rgba(23,20,14,.7); }
+    .sec-gold .nabidka-note { color: rgba(23,20,14,.62); }
+    .sec-gold .quick-icon { color: var(--bg-dark); }
+    .sec-gold .quick-lbl { color: var(--bg-dark); }
+    .sec-gold .quick-sub { color: rgba(23,20,14,.62); }
+    .sec-gold.quick { border-top-color: rgba(23,20,14,.18); }
+    .sec-gold .hour-row { border-color: rgba(23,20,14,.28); }
+    .sec-gold .hour-row:first-child { border-top-color: rgba(23,20,14,.28); }
+    .sec-gold .hour-day, .sec-gold .hour-closed { color: rgba(23,20,14,.62); }
+    .sec-gold .hour-time { color: var(--bg-dark); }
+    .sec-gold .addr-row { color: rgba(23,20,14,.85); }
+    .sec-gold .addr-row svg { stroke: var(--bg-dark); }
+    .sec-gold .map-nav-btn { color: var(--bg-dark); border-bottom-color: transparent; }
+    .sec-gold .map-nav-btn:hover { border-bottom-color: var(--bg-dark); }
+    .sec-gold .story-img { box-shadow: 0 34px 80px rgba(23,20,14,.3); }
+    /* ceník jako krémový lístek na zlaté */
+    .menu-sheet {
+      background: var(--bg); border-radius: 4px;
+      padding: clamp(1.75rem, 4vw, 3.5rem);
+      box-shadow: 0 34px 80px rgba(23,20,14,.28);
+    }
+
+    /* ── REVEAL ── */
+    .rev {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .85s var(--ease), transform .85s var(--ease);
+    }
+    .rev.vis { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+  </style>
+</head>
+<body>
+
+  <!-- Linocut SVG symboly (použité přes <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- klas -->
+      <g id="lino-wheat">
+        <path d="M50 92 V30" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M50 38 Q34 32 38 16 Q52 22 50 38 Z" fill="currentColor"/>
+        <path d="M50 38 Q66 32 62 16 Q48 22 50 38 Z" fill="currentColor" opacity=".75"/>
+        <path d="M50 56 Q34 50 38 34 Q52 40 50 56 Z" fill="currentColor" opacity=".85"/>
+        <path d="M50 56 Q66 50 62 34 Q48 40 50 56 Z" fill="currentColor" opacity=".6"/>
+        <path d="M50 74 Q36 68 40 54 Q52 60 50 74 Z" fill="currentColor" opacity=".7"/>
+        <path d="M50 74 Q64 68 60 54 Q48 60 50 74 Z" fill="currentColor" opacity=".5"/>
+        <path d="M50 30 Q50 18 44 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      </g>
+      <!-- bochník -->
+      <g id="lino-loaf">
+        <path d="M14 62 Q14 34 50 34 Q86 34 86 62 Q86 72 76 72 L24 72 Q14 72 14 62 Z" fill="currentColor"/>
+        <path d="M32 44 L40 54 M46 41 L54 51 M60 44 L68 54" stroke="#FAF7F2" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+      <!-- preclík -->
+      <g id="lino-pretzel">
+        <path d="M50 24 C24 24 14 44 22 60 C28 72 42 74 50 62 C58 74 72 72 78 60 C86 44 76 24 50 24 Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <path d="M34 42 C42 56 58 56 66 42" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="38" cy="30" r="2" fill="currentColor"/><circle cx="52" cy="27" r="2" fill="currentColor"/><circle cx="64" cy="31" r="2" fill="currentColor"/>
+      </g>
+      <!-- pec -->
+      <g id="lino-oven">
+        <path d="M18 78 V40 Q18 22 50 22 Q82 22 82 40 V78 Z" fill="currentColor"/>
+        <path d="M32 78 V52 Q32 42 50 42 Q68 42 68 52 V78 Z" fill="#FAF7F2"/>
+        <path d="M42 60 Q46 52 50 58 Q54 64 58 56" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="14" y="78" width="72" height="6" rx="2" fill="currentColor"/>
+      </g>
+      <!-- razítko: kruh "PŘEDOBJEDNÁVKY OTEVŘENY" -->
+      <g id="lino-stamp-ring">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="3 5"/>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M36 50 L46 60 L66 40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <!-- lokace -->
+      <g id="lino-pin">
+        <path d="M50 88 C50 88 20 56 20 38 C20 20 34 10 50 10 C66 10 80 20 80 38 C80 56 50 88 50 88 Z" fill="currentColor"/>
+        <circle cx="50" cy="37" r="12" fill="#FAF7F2"/>
+      </g>
+      <!-- instagram-ish čtverec -->
+      <g id="lino-ig">
+        <rect x="18" y="18" width="64" height="64" rx="16" fill="none" stroke="currentColor" stroke-width="6"/>
+        <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="6"/>
+        <circle cx="68" cy="32" r="4.5" fill="currentColor"/>
+      </g>
+      <!-- facebook čtverec -->
+      <g id="lino-fb">
+        <rect x="18" y="18" width="64" height="64" rx="16" fill="none" stroke="currentColor" stroke-width="6"/>
+        <path d="M56 76 V50 h9 l2 -11 h-11 v-7 q0 -4 5 -4 h7 V20 h-10 q-14 0 -14 14 v5 h-9 v11 h9 v26 z" fill="currentColor"/>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="nav-left">
+      <a href="#dnes" class="nav-link">Dnes pečeme</a>
+      <div class="nav-sep"></div>
+      <a href="#nabidka" class="nav-link">Nabídka</a>
+      <div class="nav-sep"></div>
+      <a href="#story" class="nav-link">Příběh</a>
+      <div class="nav-sep"></div>
+      <a href="#kontakt" class="nav-link">Kontakt</a>
+    </div>
+    <div class="nav-right">
+      <a href="#kontakt" class="nav-cta">Kde nás najdete</a>
+      <div class="nav-logo-mark">
+        <div class="logo-mask"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-logo" aria-hidden="true">
+        <div class="logo-mask"></div>
+      </div>
+      <p class="hero-eyebrow" id="ey">Pekařství</p>
+      <h1 class="hero-h1">
+        <span class="w" id="w1">Jako</span>&nbsp;<span class="w" id="w2"><em>dřív.</em></span>
+      </h1>
+      <p class="hero-sub" id="hs">
+        Jsme malá rodinná pekárna v Jindřichově Hradci.<br>
+        Pečeme jako dřív. <em>Poctivě. Od srdce.</em>
+      </p>
+      <p class="hero-meta" id="hm">
+        <span>Čerstvé pečivo</span><span>Po – Pá</span><span>7:00 – do vyprodání</span>
+      </p>
+      <div class="hero-ctas" id="hc">
+        <a href="#dnes" class="btn-gold">
+          Co dnes pečeme
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="#story" class="btn-ghost">Náš příběh</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DNES PEČEME ── -->
+  <section class="dnes" id="dnes">
+    <div class="dnes-inner">
+      <div>
+        <p class="dnes-label rev">Tabule u pultu &middot; čerstvé zprávy z pece</p>
+        <h2 class="dnes-title rev d1">Dnes<br><em>pečeme</em></h2>
+        <p class="dnes-text rev d2">
+          Každý den je nabídka trochu jiná — podle sezóny a nálady pekaře.
+          Co dnes pečeme a kdy co zavoní, najdete na naší tabuli.
+        </p>
+        <p class="dnes-pull rev d3">
+          Protože čerstvost dělá den<br>a zítřek taky.
+        </p>
+        <div class="dnes-wheat rev d3 stamp">
+          <svg viewBox="0 0 100 100"><use href="#lino-wheat"/></svg>
+        </div>
+      </div>
+
+      <div class="rev d2">
+      <div class="board">
+        <div class="board-stamp">
+          <div class="logo-mask"></div>
+        </div>
+        <div class="board-head">
+          <div class="board-title">Kdy to dnes zavoní</div>
+          <div class="board-date" id="board-date"></div>
+        </div>
+        <div id="board-rows"></div>
+        <div class="board-cta">
+          <div class="board-note" id="board-note"></div>
+          <a href="#nabidka" class="btn-dark">Celá nabídka</a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PŘÍBĚH ── -->
+  <section class="story sec-gold" id="story">
+    <div class="story-inner">
+      <div>
+        <p class="label rev">Náš příběh &middot; Rodinná pekárna</p>
+        <h2 class="block-title rev d1">Pečeme tak,<br><em>jak to bývávalo</em></h2>
+        <p class="story-lead rev d2">
+          <span>Někdy stačí jedna myšlenka.</span>
+          <span class="q">A pak přijde otázka: „Když ne teď, tak kdy?“</span>
+          <span>Všechno má svůj čas. A ten náš přišel.</span>
+        </p>
+        <div class="body-text rev d2">
+          <p>Srdcem naší pekárny je Luboš. Pekař s více než 25 lety zkušeností, pro kterého je pečení nejen řemeslem, ale především tím, co má rád.</p>
+          <p>Po jeho boku stojí manželka Lucie, která se rozhodla tenhle dlouholetý sen podpořit. Protože někdy nestačí jen snít. Někdy je potřeba udělat první krok. A tak jsme do toho šli společně.</p>
+        </div>
+        <div class="stats rev d3">
+          <div class="stat">
+            <div class="stat-num">25+</div>
+            <div class="stat-lbl">Let pekařského řemesla</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">7:00</div>
+            <div class="stat-lbl">Otevíráme každé ráno</div>
+          </div>
+          <div class="stat">
+            <div class="stat-num">100%</div>
+            <div class="stat-lbl">Poctivé suroviny</div>
+          </div>
+        </div>
+        <div class="section-stamp stamp rev d3"><svg viewBox="0 0 100 100"><use href="#lino-pretzel"/></svg></div>
+      </div>
+      <div class="story-img rev d2">
+        <img src="foto/manzele.jpg" alt="Lucie a Luboš Illeovi ve své pekárně pod dřevěným logem">
+        <div class="story-img-tag">Lucie &amp; Luboš Illeovi</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NABÍDKA / CENÍK ── -->
+  <section class="nabidka sec-gold" id="nabidka">
+    <div class="nabidka-inner">
+      <div class="nabidka-head">
+        <p class="label rev">Stálá nabídka &middot; Peče se denně</p>
+        <h2 class="block-title xl rev d1">Co u nás<br><em>najdete</em></h2>
+        <p class="nabidka-sub rev d2">Nabídka se mění podle sezóny — tohle peče pekárna pořád.</p>
+      </div>
+      <div class="menu-sheet">
+      <div class="menu-grid" id="menu-grid"></div>
+      </div>
+      <div class="nabidka-cta rev">
+        <p class="nabidka-note">Nabídka se může měnit podle sezóny a nálady pekaře ♥</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── KÁVA — Nordbeans ── -->
+  <section class="kava" id="kava">
+    <div class="kava-inner">
+      <div class="rev">
+      <a class="kava-img" href="https://www.nordbeans.cz/" target="_blank" rel="noopener" title="Výběrová káva Nordbeans">
+        <img src="foto/nordbeans-wildfox.png" alt="Sáček výběrové kávy Nordbeans — Wild Fox Espresso z Brazílie">
+        <span class="kava-img-tag">Wild Fox Espresso &middot; Brazílie</span>
+      </a>
+      </div>
+      <div>
+        <p class="label rev">Ke každé buchtě &middot; Výběrová káva</p>
+        <h2 class="block-title rev d1">A k tomu<br><em>dobrá káva</em></h2>
+        <div class="body-text rev d2">
+          <p>Kávu nám praží liberecká výběrová pražírna <a href="https://www.nordbeans.cz/" target="_blank" rel="noopener" class="kava-link">Nordbeans</a> — espresso i kávu s sebou připravujeme z čerstvě pražených zrn.</p>
+          <p>Čerstvě umletá káva a koláč ještě teplý z pece. Víc ráno nepotřebujete.</p>
+        </div>
+        <a href="https://www.nordbeans.cz/" target="_blank" rel="noopener" class="btn-dark rev d3" style="margin-top:2.25rem">Objevit pražírnu Nordbeans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PEČIVO GRID ── -->
+  <section class="pecivo sec-gold">
+    <div class="pecivo-head">
+      <div>
+        <p class="label rev">Z naší pece &middot; Každé ráno jinak</p>
+        <h2 class="block-title xl rev d1">Vypečená<br><em>galerie</em></h2>
+      </div>
+      <p class="pecivo-note rev d2">Projíždějte fotky do strany — a přijďte ochutnat, nabídka se mění každé ráno.</p>
+    </div>
+    <div class="strip-wrap rev">
+      <button class="strip-btn prev" type="button" aria-label="Předchozí fotky">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <div class="polaroid-strip" id="strip">
+      <figure class="polaroid" style="--r:-2.8deg; --tr:-3deg">
+        <div class="tape"></div>
+        <img src="foto/chleb-kvas.jpg" alt="Kvasové chleby na dřevěných policích" loading="lazy" style="object-position:center 55%">
+        <figcaption>chléb žitný kvas</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:2.2deg; --tr:2deg">
+        <div class="tape"></div>
+        <img src="foto/croissanty.jpg" alt="Zlaté máslové croissanty" loading="lazy" style="object-position:center 60%">
+        <figcaption>máslové croissanty</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:-1.6deg; --tr:4deg">
+        <div class="tape"></div>
+        <img src="foto/boruvky.jpg" alt="Plech borůvkových koláčků s drobenkou" loading="lazy" style="object-position:center 65%">
+        <figcaption>borůvkové koláčky</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:3deg; --tr:-2.5deg">
+        <div class="tape"></div>
+        <img src="foto/pekar.jpg" alt="Luboš Ille u pece s plechem čerstvých housek" loading="lazy" style="object-position:20% center">
+        <figcaption>Luboš u pece</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:-2.4deg; --tr:1.5deg">
+        <div class="tape"></div>
+        <img src="foto/strudl.jpg" alt="Babiččin štrůdl s cedulkou" loading="lazy" style="object-position:center 60%">
+        <figcaption>babiččin štrůdl</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:1.8deg; --tr:-4deg">
+        <div class="tape"></div>
+        <img src="foto/kolac-rybiz.jpg" alt="Rybízový koláč s drobenkou" loading="lazy" style="object-position:center 45%">
+        <figcaption>rybízový koláč</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:-3.2deg; --tr:3deg">
+        <div class="tape"></div>
+        <img src="foto/flatlay.jpg" alt="Skořicoví šneci, jahody a zapečené bagetky" loading="lazy" style="object-position:center 40%">
+        <figcaption>snídaně jako dřív</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:2.6deg; --tr:-1.5deg">
+        <div class="tape"></div>
+        <img src="foto/velikonoce.jpg" alt="Velikonoční mazance s visačkou pekárny" loading="lazy" style="object-position:center 70%">
+        <figcaption>mazance na Velikonoce</figcaption>
+      </figure>
+      <figure class="polaroid" style="--r:-1.4deg; --tr:2.5deg">
+        <div class="tape"></div>
+        <img src="foto/vyroba.jpg" alt="Luboš zakládá plech do pece" loading="lazy" style="object-position:center 30%">
+        <figcaption>další várka do pece</figcaption>
+      </figure>
+      </div>
+      <button class="strip-btn next" type="button" aria-label="Další fotky">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── QUICK LINKS ── -->
+  <section class="quick sec-gold">
+    <div class="quick-inner">
+      <a href="https://www.instagram.com/pekarstvi_jakodriv/" target="_blank" rel="noopener" class="quick-item rev">
+        <div class="quick-icon stamp"><svg viewBox="0 0 100 100"><use href="#lino-ig"/></svg></div>
+        <div class="quick-lbl">Sledujte nás</div>
+        <div class="quick-sub">co právě vyndáváme z pece</div>
+      </a>
+      <a href="#kontakt" class="quick-item rev d1">
+        <div class="quick-icon stamp"><svg viewBox="0 0 100 100"><use href="#lino-pin"/></svg></div>
+        <div class="quick-lbl">Kde nás najdete</div>
+        <div class="quick-sub">Jindřichův Hradec</div>
+      </a>
+      <a href="https://www.facebook.com/p/Peka%C5%99stv%C3%AD-JAKO-D%C5%98%C3%8DV-61577256286078/" target="_blank" rel="noopener" class="quick-item rev d2">
+        <div class="quick-icon stamp"><svg viewBox="0 0 100 100"><use href="#lino-fb"/></svg></div>
+        <div class="quick-lbl">Jsme na Facebooku</div>
+        <div class="quick-sub">novinky &amp; sezónní pečení</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── KONTAKT ── -->
+  <section class="kontakt sec-gold" id="kontakt">
+    <div class="kontakt-inner">
+      <div>
+        <p class="label rev">Kde nás najdete &middot; Jindřichův Hradec</p>
+        <h2 class="block-title rev d1">Přijďte se<br><em>podívat</em></h2>
+        <div class="hours rev d2" style="margin-top:1.75rem">
+          <p class="label" style="margin-bottom:.6rem;font-size:.65rem">Otevírací doba</p>
+          <div class="hour-row">
+            <span class="hour-day">Pondělí – Pátek</span>
+            <span class="hour-time">7:00 – do vyprodání</span>
+          </div>
+          <div class="hour-row">
+            <span class="hour-day">Sobota – Neděle</span>
+            <span class="hour-time hour-closed">Zavřeno</span>
+          </div>
+        </div>
+        <div class="addr rev d2" style="margin-top:1.5rem">
+          <div class="addr-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Klášterská 92, 377 01 Jindřichův Hradec
+          </div>
+          <div class="addr-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.19h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91A16 16 0 0 0 14 14.91l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 15.92z"/></svg>
+            <a href="tel:+420603785009" style="color:inherit;text-decoration:none">603 785 009</a>
+          </div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="map-wrap">
+          <iframe
+            src="https://maps.google.com/maps?q=Klášterská+92,+377+01+Jindřichův+Hradec&output=embed&hl=cs&z=16"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Mapa — Pekařství Jako Dřív"
+          ></iframe>
+        </div>
+        <a
+          href="https://maps.google.com/maps?q=Klášterská+92,+377+01+Jindřichův+Hradec"
+          target="_blank" rel="noopener"
+          class="map-nav-btn"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Navigovat sem
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-left">
+      <div class="footer-logo"><div class="logo-mask"></div></div>
+      <div class="footer-brand">Jako <em>Dřív</em> Pekařství</div>
+    </div>
+    <div class="footer-meta">© 2026 Pekařství Jako Dřív &mdash; Jindřichův Hradec</div>
+    <div class="footer-ksh">Web vytvořilo <a href="https://ksh-partners.cz" target="_blank" rel="noopener">KSH studio</a></div>
+  </footer>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────
+    //  OBSAH
+    //  Tohle jsou výchozí data zapečená do stránky. Když je dostupný
+    //  PocketBase, přepíše je tím, co si pekárna nastavila v adminu.
+    //  Když PocketBase neodpovídá, web funguje dál s těmito daty —
+    //  nikdy nezůstane prázdné místo.
+    // ─────────────────────────────────────────────────────────────
+    const PB_URL = 'https://pb.pekarstvijakodriv.cz';
+
+    const DATA = {
+      tabule: {
+        datum: '',            // ISO (2026-09-04); prázdné = dnešek
+        poznamka: 'Pečivo nezamlouváme — nezlobte se ♥',
+        polozky: [
+          { nazev: 'Chléb žitný kvas',        popis: '70 % žito · 30 % pšenice',       cena: 70 },
+          { nazev: 'Babiččin štrůdl',         popis: '300 g · podle rodinného receptu', cena: 50 },
+          { nazev: 'Rohlíky z horkého plechu', popis: 'peče se několikrát denně',       cena: 6  }
+        ]
+      },
+      cenik: [
+        { nazev: 'Chléb', ikona: 'lino-loaf', polozky: [
+          { nazev: 'Žitný chléb',   stitek: 'kvas', popis: '600 g · ze žitného kvasu', cena: 70  },
+          { nazev: 'Škvarkový chléb',               popis: '600 g',                    cena: 100 },
+          { nazev: 'Kořenový chléb',                popis: '350 g',                    cena: 45  }
+        ]},
+        { nazev: 'Běžné pečivo', ikona: 'lino-pretzel', polozky: [
+          { nazev: 'Rohlík',            popis: '60 g',  cena: 6  },
+          { nazev: 'Makovka',           popis: '70 g',  cena: 15 },
+          { nazev: 'Dalamánek žitný',   popis: '100 g', cena: 15 },
+          { nazev: 'Ci-bulka',                          cena: 15 },
+          { nazev: 'Vícezrnná bageta',                  cena: 25 },
+          { nazev: 'Slaninový rohlík',  popis: '90 g',  cena: 35 }
+        ]},
+        { nazev: 'Koláče', ikona: 'lino-oven', polozky: [
+          { nazev: 'Koláček',         popis: '90 g',  cena: 30 },
+          { nazev: 'Moravský koláč',  popis: '100 g', cena: 40 },
+          { nazev: 'Borůvkový koláč', popis: '100 g', cena: 45 },
+          { nazev: 'Sedlácký koláč',                  cena: 45 }
+        ]},
+        { nazev: 'Sladké pečivo', ikona: 'lino-wheat', polozky: [
+          { nazev: 'Ořechový loupák',                                              cena: 30 },
+          { nazev: 'Skořicový šnek',      popis: '120 g',                          cena: 30 },
+          { nazev: 'Honzovy buchty',                                               cena: 35 },
+          { nazev: 'Brownies / bublanina',                                         cena: 40 },
+          { nazev: 'Croissant čoko',                                               cena: 50 },
+          { nazev: 'Babiččin štrúdl',     popis: '300 g · podle rodinného receptu', cena: 50 },
+          { nazev: 'Makový závin',        popis: '300 g',                          cena: 50 }
+        ]}
+      ]
+    };
+
+    const esc = s => String(s ?? '').replace(/[&<>"]/g,
+      c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+    const DNY = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'];
+    function czDatum(iso) {
+      const d = iso ? new Date(iso + 'T12:00:00') : new Date();
+      if (isNaN(d)) return '';
+      return `${DNY[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`;
+    }
+
+    function renderTabule() {
+      const t = DATA.tabule || {};
+      document.getElementById('board-date').textContent = czDatum(t.datum);
+      document.getElementById('board-note').textContent = t.poznamka || '';
+      document.getElementById('board-rows').innerHTML = (t.polozky || []).map(p => `
+        <div class="board-row">
+          <div class="board-item">
+            <strong>${esc(p.nazev)}</strong>
+            ${p.popis ? `<span>${esc(p.popis)}</span>` : ''}
+          </div>
+          <div class="board-price">${esc(p.cena)} Kč</div>
+        </div>`).join('');
+    }
+
+    function renderCenik() {
+      // dvousloupcová sazba jako v tištěném jídelním lístku; zpoždění revealu po sloupcích
+      const kat = (DATA.cenik || [])
+        .map(k => ({ ...k, polozky: (k.polozky || []).filter(p => !p.skryto) }))
+        .filter(k => k.polozky.length);
+      const del = ['', 'd1', 'd1', 'd2'];
+      const půl = Math.ceil(kat.length / 2);
+
+      const blok = (k, i) => `
+        <div class="menu-cat rev ${del[i] || 'd2'}">
+          <div class="menu-cat-title">
+            <div class="cat-stamp stamp"><svg viewBox="0 0 100 100"><use href="#${esc(k.ikona || 'lino-wheat')}"/></svg></div>
+            ${esc(k.nazev)}
+          </div>
+          ${k.polozky.map(p => `
+            <div class="menu-item">
+              <div>
+                <span class="menu-item-name">${esc(p.nazev)}${p.stitek ? `<span class="menu-tag">${esc(p.stitek)}</span>` : ''}</span>
+                ${p.popis ? `<span class="menu-item-desc">${esc(p.popis)}</span>` : ''}
+              </div>
+              <div class="menu-dots"></div>
+              <div class="menu-price">${esc(p.cena)} Kč</div>
+            </div>`).join('')}
+        </div>`;
+
+      document.getElementById('menu-grid').innerHTML =
+        `<div>${kat.slice(0, půl).map((k, i) => blok(k, i)).join('')}</div>` +
+        `<div>${kat.slice(půl).map((k, i) => blok(k, i + půl)).join('')}</div>`;
+    }
+
+    renderTabule();
+    renderCenik();
+
+    // Sticky nav
+    const nav = document.querySelector('nav');
+    const threshold = window.innerHeight * 0.8;
+    function updateNav() {
+      nav.classList.toggle('nav-solid', window.scrollY > threshold);
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+    // Hero animace — logo se kreslí samo (CSS), text nastupuje za ním
+    setTimeout(() => {
+      setTimeout(() => document.getElementById('ey').classList.add('vis'), 1050);
+      ['w1','w2'].forEach((id,i) =>
+        setTimeout(() => document.getElementById(id).classList.add('vis'), 1250 + i*140)
+      );
+      setTimeout(() => document.getElementById('hs').classList.add('vis'),  1750);
+      setTimeout(() => document.getElementById('hm').classList.add('vis'),  1900);
+      setTimeout(() => document.getElementById('hc').classList.add('vis'),  2050);
+    }, 80);
+
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+      });
+    }, { threshold: .14, rootMargin: '0px 0px -40px 0px' });
+    const observeRevs = () => document.querySelectorAll('.rev:not(.vis)').forEach(el => io.observe(el));
+    observeRevs();
+
+    // ── Živý obsah z PocketBase ──
+    // Selže-li cokoli (server dole, špatná data), necháme zapečená data být.
+    fetch(`${PB_URL}/api/collections/obsah/records?perPage=1`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(({ items }) => {
+        const rec = items && items[0];
+        if (!rec) return;
+        if (rec.tabule && Array.isArray(rec.tabule.polozky) && rec.tabule.polozky.length) {
+          DATA.tabule = rec.tabule;
+          renderTabule();
+        }
+        if (Array.isArray(rec.cenik) && rec.cenik.length) {
+          DATA.cenik = rec.cenik;
+          renderCenik();
+          observeRevs();
+        }
+      })
+      .catch(() => { /* ticho — web běží dál na zapečených datech */ });
+
+    // Galerie — šipky + tažení myší; svislé scrollování stránky necháváme být
+    const strip = document.getElementById('strip');
+    if (strip) {
+      const step = () => (strip.querySelector('.polaroid').getBoundingClientRect().width + 28) * 2;
+      document.querySelector('.strip-btn.prev').addEventListener('click', () => strip.scrollBy({ left: -step(), behavior: 'smooth' }));
+      document.querySelector('.strip-btn.next').addEventListener('click', () => strip.scrollBy({ left: step(), behavior: 'smooth' }));
+      let down = false, startX = 0, startLeft = 0;
+      strip.addEventListener('pointerdown', e => {
+        if (e.pointerType !== 'mouse') return;
+        down = true; startX = e.clientX; startLeft = strip.scrollLeft;
+        strip.classList.add('dragging');
+      });
+      window.addEventListener('pointermove', e => {
+        if (down) strip.scrollLeft = startLeft - (e.clientX - startX);
+      });
+      window.addEventListener('pointerup', () => { down = false; strip.classList.remove('dragging'); });
+    }
+  </script>
+</body>
+</html>

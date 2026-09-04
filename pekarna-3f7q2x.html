@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Správa webu — Jako Dřív</title>
+<link rel="manifest" href="admin-manifest.json">
+<meta name="theme-color" content="#17140e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jako Dřív">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f6f1e8;
+    --card: #fffdf9;
+    --ink: #17140e;
+    --muted: #6f665a;
+    --line: #e2d8c8;
+    --gold: #c68b3c;
+    --gold-dark: #9a6131;
+    --red: #b8342b;
+    --ok: #2f7d4f;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg); color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ── PŘIHLÁŠENÍ ── */
+  .login-wrap {
+    min-height: 100dvh; display: grid; place-items: center; padding: 1.5rem;
+  }
+  .login {
+    width: 100%; max-width: 380px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 2rem 1.5rem; text-align: center;
+  }
+  .login h1 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem;
+    font-weight: 900; letter-spacing: -.02em; margin-bottom: .35rem;
+  }
+  .login p { color: var(--muted); font-size: .875rem; margin-bottom: 1.5rem; }
+
+  /* ── HLAVIČKA ── */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--ink); color: #f4efe6;
+    padding: calc(.9rem + env(safe-area-inset-top)) 1rem .9rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  header h1 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+  .logout {
+    background: none; border: 1px solid rgba(244,239,230,.3); color: #f4efe6;
+    padding: .45rem .8rem; border-radius: 4px; font-size: .8rem; cursor: pointer;
+  }
+
+  /* ── ZÁLOŽKY ── */
+  .tabs {
+    position: sticky; top: 0; z-index: 19;
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--card); border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    padding: .95rem .5rem; border: none; background: none; cursor: pointer;
+    font: inherit; font-weight: 600; font-size: .9rem; color: var(--muted);
+    border-bottom: 3px solid transparent;
+  }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--gold); }
+
+  main { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem 8rem; }
+  .panel[hidden] { display: none; }
+
+  .hint {
+    background: #fbf5ea; border-left: 3px solid var(--gold);
+    padding: .8rem .9rem; border-radius: 0 4px 4px 0;
+    font-size: .85rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.25rem;
+  }
+
+  /* ── FORMULÁŘOVÉ PRVKY ── */
+  label { display: block; font-size: .78rem; font-weight: 600; color: var(--muted); margin-bottom: .3rem; }
+  input[type=text], input[type=date], input[type=number], input[type=email], input[type=password], select {
+    width: 100%; font: inherit; font-size: 1rem;
+    padding: .7rem .75rem; border: 1px solid var(--line); border-radius: 4px;
+    background: var(--card); color: var(--ink);
+  }
+  input:focus, select:focus { outline: 2px solid var(--gold); outline-offset: -1px; }
+  .field { margin-bottom: .85rem; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: 1rem; margin-bottom: .85rem;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .75rem; margin-bottom: .85rem;
+  }
+  .card-head strong { font-size: .95rem; }
+
+  .row-grid { display: grid; grid-template-columns: 1fr 96px; gap: .55rem; }
+  .row-grid .wide { grid-column: 1 / -1; }
+
+  .btn {
+    font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer;
+    padding: .75rem 1.1rem; border-radius: 4px; border: 1px solid transparent;
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  }
+  .btn-gold { background: var(--gold); color: var(--ink); width: 100%; }
+  .btn-gold:disabled { opacity: .55; cursor: default; }
+  .btn-ghost { background: none; border-color: var(--line); color: var(--ink); width: 100%; }
+  .btn-sm { padding: .5rem .7rem; font-size: .8rem; }
+  .btn-del { background: none; border: none; color: var(--red); cursor: pointer; font-size: .8rem; font-weight: 600; padding: .4rem; }
+
+  .check { display: flex; align-items: center; gap: .55rem; font-size: .85rem; color: var(--muted); cursor: pointer; }
+  .check input { width: 20px; height: 20px; accent-color: var(--gold); }
+
+  .empty { color: var(--muted); font-size: .875rem; text-align: center; padding: 1rem 0; }
+  .err { color: var(--red); font-size: .85rem; margin-top: .75rem; min-height: 1.2em; }
+
+  /* ── ULOŽIT (fixní lišta) ── */
+  .savebar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    background: var(--card); border-top: 1px solid var(--line);
+    padding: .85rem 1rem calc(.85rem + env(safe-area-inset-bottom));
+  }
+  .savebar-inner { max-width: 640px; margin: 0 auto; }
+  .status { text-align: center; font-size: .82rem; margin-top: .5rem; min-height: 1.2em; }
+  .status.ok { color: var(--ok); }
+  .status.bad { color: var(--red); }
+
+  /* ── VÝBĚR Z CENÍKU ── */
+  dialog {
+    border: none; border-radius: 8px 8px 0 0; padding: 0;
+    width: 100%; max-width: 640px; margin: auto auto 0;
+    background: var(--card); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(23,20,14,.55); }
+  .pick-head {
+    position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--line);
+    padding: 1rem; display: flex; align-items: center; justify-content: space-between;
+  }
+  .pick-list { max-height: 60dvh; overflow-y: auto; padding: .5rem 0; }
+  .pick-cat { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+              color: var(--muted); padding: .9rem 1rem .3rem; }
+  .pick-item {
+    display: flex; justify-content: space-between; gap: 1rem; width: 100%;
+    padding: .8rem 1rem; background: none; border: none; border-bottom: 1px solid var(--line);
+    font: inherit; text-align: left; cursor: pointer;
+  }
+  .pick-item:hover { background: #faf5eb; }
+  .pick-item .p { color: var(--gold-dark); font-weight: 600; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<!-- ── PŘIHLÁŠENÍ ── -->
+<div class="login-wrap" id="loginView">
+  <form class="login" id="loginForm">
+    <h1>Správa webu</h1>
+    <p>Pekařství Jako Dřív</p>
+    <div class="field" style="text-align:left">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div class="field" style="text-align:left">
+      <label for="heslo">Heslo</label>
+      <input type="password" id="heslo" autocomplete="current-password" required>
+    </div>
+    <button class="btn btn-gold" type="submit" id="loginBtn">Přihlásit se</button>
+    <div class="err" id="loginErr"></div>
+  </form>
+</div>
+
+<!-- ── APLIKACE ── -->
+<div id="appView" hidden>
+  <header>
+    <h1>Správa webu</h1>
+    <button class="logout" id="logoutBtn">Odhlásit</button>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabTabule" aria-selected="true" aria-controls="panelTabule">Dnešní tabule</button>
+    <button class="tab" role="tab" id="tabCenik"  aria-selected="false" aria-controls="panelCenik">Ceník</button>
+  </div>
+
+  <main>
+    <!-- TABULE -->
+    <section class="panel" id="panelTabule" role="tabpanel">
+      <p class="hint">
+        Tohle je ta cedulka na webu, co ukazuje, co se dnes peče.
+        Nejrychleji to naklikáte tlačítkem <strong>Vybrat z ceníku</strong> —
+        položka se i s cenou doplní sama.
+      </p>
+
+      <div class="card">
+        <div class="field">
+          <label for="datum">Datum na tabuli</label>
+          <input type="date" id="datum">
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label for="poznamka">Poznámka pod tabulí</label>
+          <input type="text" id="poznamka" placeholder="Pečivo nezamlouváme — nezlobte se ♥">
+        </div>
+      </div>
+
+      <div id="tabuleRows"></div>
+
+      <button class="btn btn-ghost" id="pickBtn" style="margin-bottom:.6rem">Vybrat z ceníku</button>
+      <button class="btn btn-ghost" id="addRowBtn">Přidat prázdný řádek</button>
+    </section>
+
+    <!-- CENÍK -->
+    <section class="panel" id="panelCenik" role="tabpanel" hidden>
+      <p class="hint">
+        Stálá nabídka na webu. Co dočasně nepečete, nemusíte mazat —
+        stačí zaškrtnout <strong>Dočasně nepečeme</strong> a položka z webu zmizí,
+        ale zůstane vám tady schovaná na příště.
+      </p>
+      <div id="cenikCats"></div>
+      <button class="btn btn-ghost" id="addCatBtn">Přidat kategorii</button>
+    </section>
+  </main>
+
+  <div class="savebar">
+    <div class="savebar-inner">
+      <button class="btn btn-gold" id="saveBtn">Uložit a zveřejnit</button>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── VÝBĚR Z CENÍKU ── -->
+<dialog id="pickDlg">
+  <div class="pick-head">
+    <strong>Vybrat z ceníku</strong>
+    <button class="btn btn-ghost btn-sm" id="pickClose" style="width:auto">Zavřít</button>
+  </div>
+  <div class="pick-list" id="pickList"></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.22.0/dist/pocketbase.umd.js"
+        integrity="sha384-T+S9YoRnorI8IieoZF3hO6F90w0yofQ6jkaibiBfWBmcBIyegy8FRFim46FqwbE7"
+        crossorigin="anonymous"></script>
+<script>
+const PB_URL = 'https://pb.pekarstvijakodriv.cz';
+const pb = new PocketBase(PB_URL);
+
+const IKONY = [
+  ['lino-loaf',    'Bochník'],
+  ['lino-pretzel', 'Preclík'],
+  ['lino-oven',    'Pec'],
+  ['lino-wheat',   'Klas']
+];
+
+let recId = null;
+let DATA = { tabule: { datum: '', poznamka: '', polozky: [] }, cenik: [] };
+
+const $  = id => document.getElementById(id);
+const el = (tag, cls, html) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (html != null) n.innerHTML = html;
+  return n;
+};
+const dnesISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+
+/* ─── PŘIHLÁŠENÍ ─────────────────────────────────────────── */
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('loginBtn'), err = $('loginErr');
+  btn.disabled = true; err.textContent = '';
+  try {
+    await pb.collection('users').authWithPassword($('email').value.trim(), $('heslo').value);
+    start();
+  } catch (ex) {
+    err.textContent = ex?.status === 400
+      ? 'Špatný e-mail nebo heslo.'
+      : 'Nepodařilo se spojit se serverem. Zkuste to prosím za chvíli.';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  pb.authStore.clear();
+  $('appView').hidden = true;
+  $('loginView').hidden = false;
+});
+
+/* ─── ZÁLOŽKY ────────────────────────────────────────────── */
+function prepni(naTabuli) {
+  $('tabTabule').setAttribute('aria-selected', naTabuli);
+  $('tabCenik').setAttribute('aria-selected', !naTabuli);
+  $('panelTabule').hidden = !naTabuli;
+  $('panelCenik').hidden  = naTabuli;
+  window.scrollTo(0, 0);
+}
+$('tabTabule').addEventListener('click', () => prepni(true));
+$('tabCenik').addEventListener('click',  () => prepni(false));
+
+/* ─── NAČTENÍ ────────────────────────────────────────────── */
+async function start() {
+  $('loginView').hidden = true;
+  $('appView').hidden = false;
+  try {
+    const list = await pb.collection('obsah').getList(1, 1);
+    if (list.items.length) {
+      const r = list.items[0];
+      recId = r.id;
+      if (r.tabule) DATA.tabule = r.tabule;
+      if (Array.isArray(r.cenik)) DATA.cenik = r.cenik;
+    }
+  } catch (ex) {
+    stav('Obsah se nepodařilo načíst — neukládejte, ať nepřepíšete web prázdnými daty.', 'bad');
+    $('saveBtn').disabled = true;
+    return;
+  }
+  $('datum').value = DATA.tabule.datum || dnesISO();
+  $('poznamka').value = DATA.tabule.poznamka || '';
+  kresliTabuli();
+  kresliCenik();
+}
+
+/* ─── TABULE ─────────────────────────────────────────────── */
+function kresliTabuli() {
+  const wrap = $('tabuleRows');
+  wrap.innerHTML = '';
+  if (!DATA.tabule.polozky.length) {
+    wrap.append(el('div', 'empty', 'Zatím tu nic není — přidejte, co se dnes peče.'));
+  }
+  DATA.tabule.polozky.forEach((p, i) => {
+    const c = el('div', 'card');
+    c.innerHTML = `
+      <div class="card-head">
+        <strong>${i + 1}. řádek</strong>
+        <button class="btn-del" type="button">Smazat</button>
+      </div>
+      <div class="row-grid">
+        <div><label>Název</label><input type="text" data-k="nazev" value="${att(p.nazev)}"></div>
+        <div><label>Cena (Kč)</label><input type="number" inputmode="numeric" data-k="cena" value="${att(p.cena)}"></div>
+        <div class="wide"><label>Popisek (nepovinný)</label><input type="text" data-k="popis" value="${att(p.popis)}" placeholder="např. 600 g · ze žitného kvasu"></div>
+      </div>`;
+    c.querySelectorAll('[data-k]').forEach(inp =>
+      inp.addEventListener('input', () => { p[inp.dataset.k] = inp.value; }));
+    c.querySelector('.btn-del').addEventListener('click', () => {
+      DATA.tabule.polozky.splice(i, 1); kresliTabuli();
+    });
+    wrap.append(c);
+  });
+}
+const att = v => String(v ?? '').replace(/"/g, '&quot;');
+
+$('addRowBtn').addEventListener('click', () => {
+  DATA.tabule.polozky.push({ nazev: '', popis: '', cena: '' });
+  kresliTabuli();
+});
+
+/* výběr z ceníku — ať se ráno nemusí nic přepisovat */
+$('pickBtn').addEventListener('click', () => {
+  const list = $('pickList');
+  list.innerHTML = '';
+  let prazdno = true;
+  DATA.cenik.forEach(k => {
+    if (!k.polozky?.length) return;
+    prazdno = false;
+    list.append(el('div', 'pick-cat', esc(k.nazev)));
+    k.polozky.forEach(p => {
+      const b = el('button', 'pick-item',
+        `<span>${esc(p.nazev)}${p.popis ? `<br><small style="color:var(--muted)">${esc(p.popis)}</small>` : ''}</span>
+         <span class="p">${esc(p.cena)} Kč</span>`);
+      b.type = 'button';
+      b.addEventListener('click', () => {
+        DATA.tabule.polozky.push({ nazev: p.nazev, popis: p.popis || '', cena: p.cena });
+        kresliTabuli();
+        $('pickDlg').close();
+      });
+      list.append(b);
+    });
+  });
+  if (prazdno) list.append(el('div', 'empty', 'Ceník je zatím prázdný.'));
+  $('pickDlg').showModal();
+});
+$('pickClose').addEventListener('click', () => $('pickDlg').close());
+
+/* ─── CENÍK ──────────────────────────────────────────────── */
+function kresliCenik() {
+  const wrap = $('cenikCats');
+  wrap.innerHTML = '';
+  if (!DATA.cenik.length) {
+    wrap.append(el('div', 'empty', 'Zatím tu není žádná kategorie.'));
+  }
+  DATA.cenik.forEach((k, ki) => {
+    const c = el('div', 'card');
+    c.innerHTML = `
+      <div class="card-head">
+        <strong>Kategorie</strong>
+        <button class="btn-del" type="button" data-del-cat>Smazat kategorii</button>
+      </div>
+      <div class="row-grid" style="margin-bottom:1rem">
+        <div><label>Název</label><input type="text" data-cat="nazev" value="${att(k.nazev)}"></div>
+        <div><label>Ikona</label><select data-cat="ikona">
+          ${IKONY.map(([v, n]) => `<option value="${v}"${k.ikona === v ? ' selected' : ''}>${n}</option>`).join('')}
+        </select></div>
+      </div>
+      <div data-items></div>
+      <button class="btn btn-ghost btn-sm" type="button" data-add-item>Přidat položku</button>`;
+
+    c.querySelectorAll('[data-cat]').forEach(inp =>
+      inp.addEventListener('input', () => { k[inp.dataset.cat] = inp.value; }));
+    c.querySelector('[data-del-cat]').addEventListener('click', () => {
+      if (confirm(`Smazat celou kategorii „${k.nazev}" i s položkami?`)) {
+        DATA.cenik.splice(ki, 1); kresliCenik();
+      }
+    });
+    c.querySelector('[data-add-item]').addEventListener('click', () => {
+      (k.polozky ||= []).push({ nazev: '', popis: '', cena: '' });
+      kresliCenik();
+    });
+
+    const box = c.querySelector('[data-items]');
+    (k.polozky || []).forEach((p, pi) => {
+      const it = el('div', '');
+      it.style.cssText = 'border-top:1px solid var(--line);padding-top:.85rem;margin-bottom:.85rem';
+      it.innerHTML = `
+        <div class="row-grid">
+          <div><label>Název</label><input type="text" data-k="nazev" value="${att(p.nazev)}"></div>
+          <div><label>Cena (Kč)</label><input type="number" inputmode="numeric" data-k="cena" value="${att(p.cena)}"></div>
+          <div class="wide"><label>Popisek</label><input type="text" data-k="popis" value="${att(p.popis)}" placeholder="např. 600 g"></div>
+          <div class="wide"><label>Štítek u názvu</label><input type="text" data-k="stitek" value="${att(p.stitek)}" placeholder="např. kvas"></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:.7rem">
+          <label class="check"><input type="checkbox" data-k="skryto"${p.skryto ? ' checked' : ''}> Dočasně nepečeme</label>
+          <button class="btn-del" type="button" data-del-item>Smazat</button>
+        </div>`;
+      it.querySelectorAll('[data-k]').forEach(inp =>
+        inp.addEventListener('input', () => {
+          p[inp.dataset.k] = inp.type === 'checkbox' ? inp.checked : inp.value;
+        }));
+      it.querySelector('[data-del-item]').addEventListener('click', () => {
+        k.polozky.splice(pi, 1); kresliCenik();
+      });
+      box.append(it);
+    });
+
+    wrap.append(c);
+  });
+}
+
+$('addCatBtn').addEventListener('click', () => {
+  DATA.cenik.push({ nazev: 'Nová kategorie', ikona: 'lino-wheat', polozky: [] });
+  kresliCenik();
+});
+
+/* ─── ULOŽENÍ ────────────────────────────────────────────── */
+function stav(text, typ) {
+  const s = $('status');
+  s.textContent = text;
+  s.className = 'status' + (typ ? ' ' + typ : '');
+}
+
+$('saveBtn').addEventListener('click', async () => {
+  const btn = $('saveBtn');
+  DATA.tabule.datum = $('datum').value;
+  DATA.tabule.poznamka = $('poznamka').value;
+
+  // prázdné řádky bez názvu na web nepatří
+  const cistaTabule = {
+    ...DATA.tabule,
+    polozky: DATA.tabule.polozky.filter(p => String(p.nazev).trim())
+  };
+  const cistyCenik = DATA.cenik
+    .map(k => ({ ...k, polozky: (k.polozky || []).filter(p => String(p.nazev).trim()) }))
+    .filter(k => String(k.nazev).trim());
+
+  if (!cistaTabule.polozky.length) {
+    stav('Na tabuli musí zůstat aspoň jedna položka s názvem.', 'bad');
+    return;
+  }
+
+  btn.disabled = true;
+  stav('Ukládám…');
+  try {
+    const payload = { tabule: cistaTabule, cenik: cistyCenik };
+    if (recId) await pb.collection('obsah').update(recId, payload);
+    else recId = (await pb.collection('obsah').create(payload)).id;
+    stav('Hotovo — web je aktualizovaný.', 'ok');
+    setTimeout(() => stav(''), 4000);
+  } catch (ex) {
+    stav('Uložení se nepovedlo. Zkuste to prosím znovu.', 'bad');
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g,
+  c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+/* ─── START ──────────────────────────────────────────────── */
+if (pb.authStore.isValid) start();
+</script>
+</body>
+</html>
