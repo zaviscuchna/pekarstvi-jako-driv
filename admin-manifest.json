@@ -9,6 +9,7 @@
   "background_color": "#f6f1e8",
   "theme_color": "#17140e",
   "icons": [
-    { "src": "foto/logo-ofiko.png", "sizes": "330x338", "type": "image/png", "purpose": "any" }
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
