@@ -111,13 +111,19 @@
     }
     .nav-cta:hover { background: #d79c4d; transform: translateY(-2px); }
     /* logo se „zadokuje" do nav až po odscrollování hero */
+    /* Nad fotkou průsvitně bílé, po zbělání navigace se plynule
+       přebarví na zlaté — bílá by na krémovém pruhu zanikla. */
     .nav-logo-mark {
-      width: 60px; height: 75px; opacity: 0;
-      pointer-events: none; flex-shrink: 0; color: var(--primary);
-      transform: translateY(-8px) scale(.9);
-      transition: opacity .45s ease, transform .45s var(--spring);
+      width: 60px; height: 75px;
+      opacity: .62; color: #fff;
+      pointer-events: none; flex-shrink: 0;
+      filter: drop-shadow(0 2px 12px rgba(0,0,0,.4));
+      transition: opacity .55s ease, color .55s ease, filter .55s ease;
     }
-    nav.nav-solid .nav-logo-mark { opacity: .95; transform: none; }
+    nav.nav-solid .nav-logo-mark {
+      opacity: .95; color: var(--primary);
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0));
+    }
     .nav-logo-mark svg { width: 100%; height: 100%; }
 
     /* na mobilu nechat jen „Nabídka" — „Dnes pečeme" už je jako CTA v hero */
