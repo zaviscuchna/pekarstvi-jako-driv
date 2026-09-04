@@ -24,8 +24,10 @@
   <meta property="og:image:alt" content="Regály s čerstvým pečivem v pekařství Jako Dřív">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- hero je LCP prvek — ať se načítá souběžně se stylem, ne až po něm -->
-  <link rel="preload" as="image" href="foto/interier.jpg" fetchpriority="high">
+  <!-- hero je LCP prvek — ať se načítá souběžně se stylem, ne až po něm.
+       Na mobilu stahujeme menší výřez, ať se web otevře i na datech. -->
+  <link rel="preload" as="image" href="foto/interier.jpg" fetchpriority="high" media="(min-width: 701px)">
+  <link rel="preload" as="image" href="foto/interier-mobil.jpg" fetchpriority="high" media="(max-width: 700px)">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -146,6 +148,10 @@
       filter: contrast(1.03) saturate(.8) brightness(.88);
       transform: scale(1.04);
       animation: heroZoom 8s var(--ease) forwards;
+    }
+    /* na mobilu stačí menší fotka — 163 KB místo 600 KB */
+    @media (max-width: 700px) {
+      .hero-bg { background-image: url('foto/interier-mobil.jpg'); }
     }
     @keyframes heroZoom { to { transform: scale(1); } }
     .hero-overlay {
