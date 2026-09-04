@@ -1286,6 +1286,13 @@
         if (Array.isArray(rec.cenik) && rec.cenik.length) {
           DATA.cenik = rec.cenik;
           renderCenik();
+          // Čerstvě překreslené položky ještě nemají .vis. Co už je na
+          // obrazovce (nebo nad ní — třeba po obnovení stránky, kdy
+          // prohlížeč vrátí pozici scrollu), odkryjeme rovnou; na zbytek
+          // počká pozorovatel.
+          document.querySelectorAll('#menu-grid .rev').forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('vis');
+          });
           observeRevs();
         }
       })
