@@ -241,12 +241,40 @@
   <div class="pick-list" id="pickList"></div>
 </dialog>
 
-<script src="https://cdn.jsdelivr.net/npm/pocketbase@0.22.0/dist/pocketbase.umd.js"
-        integrity="sha384-T+S9YoRnorI8IieoZF3hO6F90w0yofQ6jkaibiBfWBmcBIyegy8FRFim46FqwbE7"
-        crossorigin="anonymous"></script>
 <script>
-const PB_URL = 'https://pb.pekarstvijakodriv.cz';
-const pb = new PocketBase(PB_URL);
+// Stejný PocketBase, jen dvě jména: dokud nedoběhne DNS na ostrou
+// doménu, sáhneme na něj přes dočasnou testovací adresu.
+const PB_URL = /(^$|^localhost$|^127\.0\.0\.1$|\.sslip\.io$)/.test(location.hostname)
+  ? 'http://pocketbase-tokwg4s804gwgocwswco48sw.46.225.180.130.sslip.io'
+  : 'https://pb.pekarstvijakodriv.cz';
+
+// Minimální klient nad PocketBase REST API — bez knihovny z CDN,
+// ať nemáme závislost, která se může pod rukama změnit.
+const KLIC = 'jd_token';
+const token = {
+  get()  { return localStorage.getItem(KLIC) || ''; },
+  set(v) { v ? localStorage.setItem(KLIC, v) : localStorage.removeItem(KLIC); }
+};
+
+async function api(method, path, body) {
+  let r;
+  try {
+    r = await fetch(PB_URL + path, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token.get() ? { Authorization: token.get() } : {})
+      },
+      body: body === undefined ? undefined : JSON.stringify(body)
+    });
+  } catch (_) {
+    const e = new Error('sit'); e.status = 0; throw e;   // server nedosažitelný
+  }
+  const txt = await r.text();
+  const data = txt ? JSON.parse(txt) : {};
+  if (!r.ok) { const e = new Error(data.message || 'Chyba'); e.status = r.status; throw e; }
+  return data;
+}
 
 const IKONY = [
   ['lino-loaf',    'Bochník'],
@@ -276,10 +304,15 @@ $('loginForm').addEventListener('submit', async e => {
   const btn = $('loginBtn'), err = $('loginErr');
   btn.disabled = true; err.textContent = '';
   try {
-    await pb.collection('users').authWithPassword($('email').value.trim(), $('heslo').value);
+    const r = await api('POST', '/api/collections/users/auth-with-password', {
+      identity: $('email').value.trim(),
+      password: $('heslo').value
+    });
+    token.set(r.token);
+    $('heslo').value = '';
     start();
   } catch (ex) {
-    err.textContent = ex?.status === 400
+    err.textContent = ex.status === 400
       ? 'Špatný e-mail nebo heslo.'
       : 'Nepodařilo se spojit se serverem. Zkuste to prosím za chvíli.';
   } finally {
@@ -287,11 +320,12 @@ $('loginForm').addEventListener('submit', async e => {
   }
 });
 
-$('logoutBtn').addEventListener('click', () => {
-  pb.authStore.clear();
+function odhlas() {
+  token.set('');
   $('appView').hidden = true;
   $('loginView').hidden = false;
-});
+}
+$('logoutBtn').addEventListener('click', odhlas);
 
 /* ─── ZÁLOŽKY ────────────────────────────────────────────── */
 function prepni(naTabuli) {
@@ -309,7 +343,7 @@ async function start() {
   $('loginView').hidden = true;
   $('appView').hidden = false;
   try {
-    const list = await pb.collection('obsah').getList(1, 1);
+    const list = await api('GET', '/api/collections/obsah/records?perPage=1');
     if (list.items.length) {
       const r = list.items[0];
       recId = r.id;
@@ -317,6 +351,7 @@ async function start() {
       if (Array.isArray(r.cenik)) DATA.cenik = r.cenik;
     }
   } catch (ex) {
+    if (ex.status === 401 || ex.status === 403) { odhlas(); return; }
     stav('Obsah se nepodařilo načíst — neukládejte, ať nepřepíšete web prázdnými daty.', 'bad');
     $('saveBtn').disabled = true;
     return;
@@ -487,12 +522,14 @@ $('saveBtn').addEventListener('click', async () => {
   stav('Ukládám…');
   try {
     const payload = { tabule: cistaTabule, cenik: cistyCenik };
-    if (recId) await pb.collection('obsah').update(recId, payload);
-    else recId = (await pb.collection('obsah').create(payload)).id;
+    if (recId) await api('PATCH', `/api/collections/obsah/records/${recId}`, payload);
+    else recId = (await api('POST', '/api/collections/obsah/records', payload)).id;
     stav('Hotovo — web je aktualizovaný.', 'ok');
     setTimeout(() => stav(''), 4000);
   } catch (ex) {
-    stav('Uložení se nepovedlo. Zkuste to prosím znovu.', 'bad');
+    stav(ex.status === 401 || ex.status === 403
+      ? 'Byli jste odhlášeni — přihlaste se prosím znovu.'
+      : 'Uložení se nepovedlo. Zkuste to prosím znovu.', 'bad');
   } finally {
     btn.disabled = false;
   }
@@ -502,7 +539,7 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g,
   c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
 /* ─── START ──────────────────────────────────────────────── */
-if (pb.authStore.isValid) start();
+if (token.get()) start();
 </script>
 </body>
 </html>

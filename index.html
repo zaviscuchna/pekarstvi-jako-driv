@@ -1138,7 +1138,11 @@
     //  Když PocketBase neodpovídá, web funguje dál s těmito daty —
     //  nikdy nezůstane prázdné místo.
     // ─────────────────────────────────────────────────────────────
-    const PB_URL = 'https://pb.pekarstvijakodriv.cz';
+    // Stejný PocketBase, jen dvě jména: dokud nedoběhne DNS na ostrou
+    // doménu, sáhneme na něj přes dočasnou testovací adresu.
+    const PB_URL = /(^$|^localhost$|^127\.0\.0\.1$|\.sslip\.io$)/.test(location.hostname)
+      ? 'http://pocketbase-tokwg4s804gwgocwswco48sw.46.225.180.130.sslip.io'
+      : 'https://pb.pekarstvijakodriv.cz';
 
     const DATA = {
       tabule: {
