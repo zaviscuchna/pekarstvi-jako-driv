@@ -1259,9 +1259,20 @@
       c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
     const DNY = ['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'];
+    /* Uložené datum platí, jen když je dnešní nebo budoucí (tabule nachystaná
+       dopředu). Staré datum se ignoruje — jinak by tabule týdny ukazovala den,
+       kdy ji někdo naposledy uložil. O víkendu je zavřeno, takže bez uloženého
+       data ukážeme nejbližší pondělí. */
+    function datumTabule(iso) {
+      const dnes = new Date(); dnes.setHours(12, 0, 0, 0);
+      const ulozene = iso ? new Date(iso + 'T12:00:00') : null;
+      if (ulozene && !isNaN(ulozene) && ulozene >= dnes) return ulozene;
+      const d = new Date(dnes);
+      while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+      return d;
+    }
     function czDatum(iso) {
-      const d = iso ? new Date(iso + 'T12:00:00') : new Date();
-      if (isNaN(d)) return '';
+      const d = datumTabule(iso);
       return `${DNY[d.getDay()]} ${d.getDate()}. ${d.getMonth() + 1}.`;
     }
 

@@ -201,6 +201,7 @@
         <div class="field">
           <label for="datum">Datum na tabuli</label>
           <input type="date" id="datum">
+          <small style="display:block;margin-top:.35rem;color:var(--muted);font-size:.78rem">Web ukazuje vždy dnešní den (o víkendu pondělí). Datum měňte jen když chystáte tabuli dopředu.</small>
         </div>
         <div class="field" style="margin-bottom:0">
           <label for="poznamka">Poznámka pod tabulí</label>
@@ -358,7 +359,9 @@ async function start() {
     $('saveBtn').disabled = true;
     return;
   }
-  $('datum').value = DATA.tabule.datum || dnesISO();
+  // staré uložené datum už neplatí (web ho ignoruje) — nabídnout dnešek
+  const ulozene = DATA.tabule.datum;
+  $('datum').value = (ulozene && ulozene >= dnesISO()) ? ulozene : dnesISO();
   $('poznamka').value = DATA.tabule.poznamka || '';
   kresliTabuli();
   kresliCenik();
@@ -503,7 +506,9 @@ function stav(text, typ) {
 
 $('saveBtn').addEventListener('click', async () => {
   const btn = $('saveBtn');
-  DATA.tabule.datum = $('datum').value;
+  // dnešek se ukládá jako „prázdné" = web ukáže vždy aktuální den;
+  // napevno se uloží jen datum dopředu
+  DATA.tabule.datum = $('datum').value > dnesISO() ? $('datum').value : '';
   DATA.tabule.poznamka = $('poznamka').value;
 
   // prázdné řádky bez názvu na web nepatří
